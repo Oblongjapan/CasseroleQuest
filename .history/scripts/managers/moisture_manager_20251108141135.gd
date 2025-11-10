@@ -1,0 +1,84 @@
+extends Node
+class_name MoistureManager
+
+## Manages moisture level and drain calculations during cooking
+
+var current_moisture: float = 100.0
+var max_moisture: float = 100.0
+var base_drain_rate: float = 0.0  # Per second
+var active_drain_modifiers: Array[Dictionary] = []  # {amount: float, duration: float}
+
+## Initialize moisture system with selected ingredients
+func setup(ingredient_1: IngredientModel, ingredient_2: IngredientModel, difficulty: float = 1.0, inventory: InventoryManager = null) -> void:
+	# Apply bonus starting moisture from relics
+	var bonus_moisture = 0.0
+	if inventory:
+		bonus_moisture = inventory.get_total_bonus_moisture()
+	
+	current_moisture = max_moisture + bonus_moisture
+	max_moisture = max_moisture + bonus_moisture
+	active_drain_modifiers.clear()
+	
+	# Calculate combined drain rate from both ingredients
+	# If using same ingredient twice, it's counted once
+	# If using two different ingredients, their stats are averaged
+	var drain_1 = ingredient_1.calculate_drain_rate()
+	var drain_2 = ingredient_2.calculate_drain_rate()
+	
+	# Check if using same ingredient twice
+	if ingredient_1 == ingredient_2:
+		base_drain_rate = drain_1  # Just use it once
+	else:
+		base_drain_rate = (drain_1 + drain_2) / 2.0  # Average different ingredients
+	
+	# Apply difficulty scaling to drain rate
+	base_drain_rate *= difficulty
+	
+	# Apply relic drain reduction
+	if inventory:
+		var drain_reduction = inventory.get_total_drain_reduction()
+		base_drain_rate *= (1.0 - drain_reduction)
+	
+	EventBus.moisture_changed.emit(current_moisture)
+
+## Update moisture every frame based on drain rate and active modifiers
+func update_moisture(delta: float) -> void:
+	var total_drain = base_drain_rate
+	
+	# Apply temporary drain modifiers
+	var expired_modifiers: Array[int] = []
+	for i in range(active_drain_modifiers.size()):
+		var modifier = active_drain_modifiers[i]
+		total_drain += modifier.amount
+		modifier.duration -= delta
+		
+		if modifier.duration <= 0:
+			expired_modifiers.append(i)
+	
+	# Remove expired modifiers (iterate backwards to avoid index issues)
+	for i in range(expired_modifiers.size() - 1, -1, -1):
+		active_drain_modifiers.remove_at(expired_modifiers[i])
+	
+	# Apply drain to moisture
+	current_moisture -= total_drain * delta
+	current_moisture = clampf(current_moisture, 0.0, max_moisture)
+	
+	EventBus.moisture_changed.emit(current_moisture)
+
+## Add a temporary drain modifier (e.g., from Cover or Blow items)
+## Amount is negative to reduce drain, positive to increase
+func apply_drain_modifier(amount: float, duration: float) -> void:
+	active_drain_modifiers.append({
+		"amount": amount,
+		"duration": duration
+	})
+
+## Restore moisture (e.g., from Stir item)
+func restore_moisture(amount: float) -> void:
+	current_moisture += amount
+	current_moisture = clampf(current_moisture, 0.0, max_moisture)
+	EventBus.moisture_changed.emit(current_moisture)
+
+## Check if moisture has reached zero (failure condition)
+func check_failure() -> bool:
+	return current_moisture <= 0.0

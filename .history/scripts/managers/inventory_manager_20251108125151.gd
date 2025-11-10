@@ -1,0 +1,85 @@
+extends Node
+class_name InventoryManager
+
+## Manages the player's collection of ingredients, active items, and relics
+
+signal inventory_updated()
+
+var owned_ingredients: Array[IngredientModel] = []
+var owned_active_items: Array[ActiveItem] = []
+var owned_relics: Array[RelicModel] = []
+
+const MAX_ACTIVE_ITEMS: int = 3
+
+## Reset inventory to empty state
+func reset_inventory() -> void:
+	owned_ingredients.clear()
+	owned_active_items.clear()
+	owned_relics.clear()
+	inventory_updated.emit()
+
+## Add an ingredient to inventory
+func add_ingredient(ingredient: IngredientModel) -> void:
+	owned_ingredients.append(ingredient)
+	inventory_updated.emit()
+
+## Add an active item to inventory (max 3)
+func add_active_item(item: ActiveItem) -> bool:
+	if owned_active_items.size() >= MAX_ACTIVE_ITEMS:
+		return false
+	owned_active_items.append(item)
+	inventory_updated.emit()
+	return true
+
+## Add a relic to inventory
+func add_relic(relic: RelicModel) -> void:
+	owned_relics.append(relic)
+	inventory_updated.emit()
+
+## Check if we can add more active items
+func can_add_active_item() -> bool:
+	return owned_active_items.size() < MAX_ACTIVE_ITEMS
+
+## Get all owned ingredients
+func get_ingredients() -> Array[IngredientModel]:
+	return owned_ingredients
+
+## Get all owned active items
+func get_active_items() -> Array[ActiveItem]:
+	return owned_active_items
+
+## Get all owned relics
+func get_relics() -> Array[RelicModel]:
+	return owned_relics
+
+## Calculate total drain reduction from all relics
+func get_total_drain_reduction() -> float:
+	var reduction = 0.0
+	for relic in owned_relics:
+		if relic.effect_type == RelicModel.EffectType.REDUCE_DRAIN:
+			reduction += relic.effect_value
+	return reduction
+
+## Calculate total cooldown reduction from all relics
+func get_total_cooldown_reduction() -> float:
+	var reduction = 0.0
+	for relic in owned_relics:
+		if relic.effect_type == RelicModel.EffectType.REDUCE_COOLDOWN:
+			reduction += relic.effect_value
+	return reduction
+
+## Calculate total bonus starting moisture from all relics
+func get_total_bonus_moisture() -> float:
+	var bonus = 0.0
+	for relic in owned_relics:
+		if relic.effect_type == RelicModel.EffectType.BONUS_MOISTURE:
+			bonus += relic.effect_value
+	return bonus
+
+## Calculate difficulty scaling reduction from all relics
+func get_difficulty_scaling_reduction() -> float:
+	var reduction = 0.0
+	for relic in owned_relics:
+		if relic.effect_type == RelicModel.EffectType.SLOWER_DIFFICULTY:
+			reduction += relic.effect_value
+	return reduction

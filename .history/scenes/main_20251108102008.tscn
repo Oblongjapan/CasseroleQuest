@@ -1,0 +1,127 @@
+[gd_scene load_steps=9 format=3 uid="uid://c7y8vq3m1h8pc"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]
+[ext_resource type="Script" path="res://scripts/managers/timer_manager.gd" id="3_timer"]
+[ext_resource type="Script" path="res://scripts/managers/active_item_manager.gd" id="4_item"]
+[ext_resource type="Script" path="res://scripts/ui/ingredient_selector.gd" id="5_selector"]
+[ext_resource type="Script" path="res://scripts/ui/moisture_bar_ui.gd" id="6_moisture_ui"]
+[ext_resource type="Script" path="res://scripts/ui/timer_display_ui.gd" id="7_timer_ui"]
+[ext_resource type="Script" path="res://scripts/ui/active_item_button_ui.gd" id="8_item_button"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_main")
+
+[node name="CookRound" type="Node" parent="."]
+
+[node name="MoistureManager" type="Node" parent="CookRound"]
+script = ExtResource("2_moisture")
+
+[node name="TimerManager" type="Node" parent="CookRound"]
+script = ExtResource("3_timer")
+
+[node name="ItemManager" type="Node" parent="CookRound"]
+script = ExtResource("4_item")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Background" type="ColorRect" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="MoistureBar" type="ProgressBar" parent="UI"]
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 450.0
+offset_bottom = 90.0
+show_percentage = false
+script = ExtResource("6_moisture_ui")
+
+[node name="MoistureLabel" type="Label" parent="UI/MoistureBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -15.0
+offset_right = 50.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimerDisplay" type="Label" parent="UI"]
+offset_left = 500.0
+offset_top = 50.0
+offset_right = 600.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 32
+text = "00:15"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("7_timer_ui")
+
+[node name="StatusLabel" type="Label" parent="UI"]
+offset_left = 50.0
+offset_top = 10.0
+offset_right = 600.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 20
+text = "Select ingredients to start!"
+horizontal_alignment = 1
+
+[node name="ActiveItemsContainer" type="HBoxContainer" parent="UI"]
+offset_left = 50.0
+offset_top = 500.0
+offset_right = 600.0
+offset_bottom = 600.0
+theme_override_constants/separation = 20
+
+[node name="IngredientSelector" type="Panel" parent="UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_selector")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/IngredientSelector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="UI/IngredientSelector/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Select 2 Ingredients"
+horizontal_alignment = 1
+
+[node name="IngredientGrid" type="GridContainer" parent="UI/IngredientSelector/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="StartButton" type="Button" parent="UI/IngredientSelector/VBoxContainer"]
+layout_mode = 2
+text = "Select 2 Ingredients"
