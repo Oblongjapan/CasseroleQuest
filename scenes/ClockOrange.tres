@@ -1,0 +1,8 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://ctxq6c6w22vr1"]
+
+[ext_resource type="FontFile" uid="uid://b5iw0672ajqxn" path="res://Assets/Fonts/alarm clock.ttf" id="1_m00fh"]
+
+[resource]
+font = ExtResource("1_m00fh")
+font_size = 47
+font_color = Color(1, 0.423529, 0, 1)

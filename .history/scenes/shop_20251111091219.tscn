@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxq8y5v7nwm2g"]
+
+[ext_resource type="Script" path="res://scripts/ui/shop_screen.gd" id="1_shop"]
+
+[node name="ShopScreen" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_shop")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TitleLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "🛒 SHOP 🛒"
+horizontal_alignment = 1
+
+[node name="RoundLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Round: 1"
+horizontal_alignment = 1
+
+[node name="CurrencyLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "💰 Currency: 100"
+horizontal_alignment = 1
+
+[node name="ShopGrid" type="GridContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="DoneButton" type="Button" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "DONE SHOPPING"

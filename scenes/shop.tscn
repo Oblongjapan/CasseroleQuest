@@ -1,0 +1,71 @@
+[gd_scene load_steps=7 format=3 uid="uid://clyhmea0hq3cy"]
+
+[ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="1_f5vc7"]
+[ext_resource type="Script" path="res://scripts/ui/shop_screen.gd" id="1_shop"]
+[ext_resource type="Texture2D" uid="uid://bkgobhtrd7tcd" path="res://Assets/Background.png" id="2_tir4r"]
+[ext_resource type="PackedScene" uid="uid://0ol7onsorxuf" path="res://scenes/card_selector.tscn" id="3_card_selector"]
+
+[sub_resource type="Theme" id="Theme_i6u8s"]
+default_font = ExtResource("1_f5vc7")
+
+[sub_resource type="Theme" id="Theme_rvf8d"]
+
+[node name="ShopScreen" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_i6u8s")
+script = ExtResource("1_shop")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TitleLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+
+[node name="ShopGrid" type="GridContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = SubResource("Theme_rvf8d")
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="CurrencyLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "💰 Currency: 100"
+horizontal_alignment = 1
+
+[node name="DoneButton" type="Button" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "DONE SHOPPING"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.360784, 0, 0.494118, 1)
+position = Vector2(642.75, 364.5)
+scale = Vector2(1.0731, 1.06287)
+texture = ExtResource("2_tir4r")
+
+[node name="CardSelector" parent="." instance=ExtResource("3_card_selector")]
+visible = false
+z_index = 100
+layout_mode = 1

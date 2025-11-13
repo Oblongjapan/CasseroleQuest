@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwqje8r3yh2gp"]
+
+[ext_resource type="Script" path="res://scripts/ui/malfunction_relic_reward.gd" id="1_relic"]
+
+[node name="MalfunctionRelicReward" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_relic")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "OVERHEAT SURVIVED!
+Choose 1 Relic"
+horizontal_alignment = 1
+
+[node name="RelicContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 30

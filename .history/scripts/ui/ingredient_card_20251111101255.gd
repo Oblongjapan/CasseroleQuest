@@ -1,0 +1,96 @@
+extends Control
+class_name IngredientCard
+
+## Individual ingredient card with drag-and-drop functionality
+
+@onready var card_panel: PanelContainer = $CardPanel
+@onready var name_label: Label = $CardPanel/VBoxContainer/NameLabel
+@onready var upgrade_label: Label = $CardPanel/VBoxContainer/UpgradeLabel
+@onready var stats_label: Label = $CardPanel/VBoxContainer/StatsLabel
+@onready var status_label: Label = $CardPanel/VBoxContainer/StatusLabel
+
+var ingredient: IngredientModel
+var card_style: StyleBoxFlat
+var is_selected: bool = false
+
+const CARD_NORMAL_COLOR := Color(0.4, 0.4, 0.5, 1.0)
+const CARD_NORMAL_BG := Color(0.15, 0.15, 0.2, 0.95)
+const CARD_SELECTED_COLOR := Color(0.3, 1.0, 0.3, 1.0)
+const CARD_SELECTED_BG := Color(0.15, 0.25, 0.15, 0.95)
+
+signal card_hovered(card: IngredientCard)
+signal card_unhovered(card: IngredientCard)
+signal card_input_event(event: InputEvent, card: IngredientCard)
+
+func _ready():
+	# Get the style from the panel
+	if card_panel:
+		card_style = card_panel.get_theme_stylebox("panel")
+		if card_style:
+			# Duplicate the style so each card has its own
+			card_style = card_style.duplicate()
+			card_panel.add_theme_stylebox_override("panel", card_style)
+	
+	# Connect mouse events
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+	gui_input.connect(_on_gui_input)
+
+## Setup card with ingredient data
+func setup(ing: IngredientModel, upgrade_desc: String = "") -> void:
+	ingredient = ing
+	
+	# Set name
+	if name_label:
+		name_label.text = ingredient.name
+	
+	# Set upgrade description if any
+	if upgrade_label:
+		if upgrade_desc.is_empty():
+			upgrade_label.hide()
+		else:
+			upgrade_label.text = upgrade_desc
+			upgrade_label.modulate = Color.GREEN
+			upgrade_label.show()
+	
+	# Set stats
+	if stats_label:
+		stats_label.text = ingredient.get_stats_description()
+	
+	# Set initial status
+	if status_label:
+		status_label.text = "Drag to Microwave"
+		status_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7, 1.0))
+
+## Mark card as selected
+func set_selected(selected: bool) -> void:
+	is_selected = selected
+	
+	if not card_style:
+		return
+	
+	if selected:
+		card_style.border_color = CARD_SELECTED_COLOR
+		card_style.bg_color = CARD_SELECTED_BG
+		if status_label:
+			status_label.text = "✓ SELECTED"
+			status_label.add_theme_color_override("font_color", CARD_SELECTED_COLOR)
+	else:
+		card_style.border_color = CARD_NORMAL_COLOR
+		card_style.bg_color = CARD_NORMAL_BG
+		if status_label:
+			status_label.text = "Drag to Microwave"
+			status_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7, 1.0))
+
+## Get the card's style for external manipulation
+func get_card_style() -> StyleBoxFlat:
+	return card_style
+
+func _on_mouse_entered() -> void:
+	card_hovered.emit(self)
+
+func _on_mouse_exited() -> void:
+	card_unhovered.emit(self)
+
+func _on_gui_input(event: InputEvent) -> void:
+	card_input_event.emit(event, self)
