@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cejst23tjcm2k"]
+[gd_scene load_steps=5 format=3 uid="uid://cejst23tjcm2k"]
 
 [ext_resource type="Script" path="res://scripts/ui/map_ui.gd" id="1_map_ui"]
+[ext_resource type="PackedScene" uid="uid://cgeogsmaqilyb" path="res://scenes/map_node.tscn" id="2_jcel2"]
+[ext_resource type="Script" path="res://scripts/ui/map_connection_drawer.gd" id="3_nqauw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kv88d"]
 
@@ -37,9 +39,132 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MapContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="MapCanvas" type="Control" parent="VBoxContainer/ScrollContainer"]
+custom_minimum_size = Vector2(800, 900)
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 30
-alignment = 1
+
+[node name="MapConnectionDrawer" type="Control" parent="VBoxContainer/ScrollContainer/MapCanvas"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_nqauw")
+
+[node name="StartNode" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 270.0
+offset_right = 73.0
+offset_bottom = 330.0
+is_starting_node = true
+connected_nodes = Array[NodePath]([NodePath("../Tier1Left"), NodePath("../Tier1Center"), NodePath("../Tier1Right")])
+
+[node name="Tier1Left" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 197.0
+offset_top = 502.0
+offset_right = 257.0
+offset_bottom = 562.0
+node_type = 1
+tier_number = 1
+connected_nodes = Array[NodePath]([NodePath("../Tier2Left"), NodePath("../Tier2Center")])
+
+[node name="Tier1Center" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 199.0
+offset_top = 267.0
+offset_right = 259.0
+offset_bottom = 327.0
+node_type = 3
+tier_number = 1
+connected_nodes = Array[NodePath]([NodePath("../Tier2Center")])
+
+[node name="Tier1Right" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 205.0
+offset_top = 91.0
+offset_right = 265.0
+offset_bottom = 151.0
+node_type = 1
+tier_number = 1
+connected_nodes = Array[NodePath]([NodePath("../Tier2Center"), NodePath("../Tier2Right")])
+modifier_type = 3
+
+[node name="Tier2Left" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 465.0
+offset_top = -7.0
+offset_right = 525.0
+offset_bottom = 53.0
+node_type = 1
+tier_number = 2
+connected_nodes = Array[NodePath]([NodePath("../Tier3Center")])
+modifier_name = "Speed Rush"
+modifier_type = 2
+modifier_value = 1.5
+
+[node name="Tier2Center" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 472.0
+offset_top = 269.0
+offset_right = 532.0
+offset_bottom = 329.0
+node_type = 4
+tier_number = 2
+connected_nodes = Array[NodePath]([NodePath("../Tier3Center")])
+
+[node name="Tier2Right" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 472.0
+offset_top = 79.0
+offset_right = 532.0
+offset_bottom = 139.0
+node_type = 6
+tier_number = 2
+connected_nodes = Array[NodePath]([NodePath("../Tier3Center")])
+
+[node name="Tier3Center" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 687.0
+offset_top = 267.0
+offset_right = 747.0
+offset_bottom = 327.0
+node_type = 2
+tier_number = 3
+connected_nodes = Array[NodePath]([NodePath("../Tier4Left"), NodePath("../Tier4Right")])
+
+[node name="Tier4Left" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 872.0
+offset_top = 62.0
+offset_right = 932.0
+offset_bottom = 122.0
+tier_number = 4
+connected_nodes = Array[NodePath]([NodePath("../BossNode")])
+
+[node name="Tier4Right" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 884.0
+offset_top = 488.0
+offset_right = 944.0
+offset_bottom = 548.0
+tier_number = 4
+connected_nodes = Array[NodePath]([NodePath("../BossNode")])
+
+[node name="BossNode" parent="VBoxContainer/ScrollContainer/MapCanvas" instance=ExtResource("2_jcel2")]
+layout_mode = 0
+offset_left = 1072.0
+offset_top = 174.0
+offset_right = 1282.0
+offset_bottom = 234.0
+rotation = 1.56305
+scale = Vector2(1.48997, -1.41446)
+node_type = 5
+tier_number = 5
+connected_nodes = Array[NodePath]([NodePath("../../MapNode2")])
+
+[node name="VBoxContainer_ScrollContainer_MapContainer#MapNode2" parent="." instance=ExtResource("2_jcel2")]
+layout_mode = 2

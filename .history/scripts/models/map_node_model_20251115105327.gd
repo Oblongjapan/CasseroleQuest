@@ -9,7 +9,8 @@ enum NodeType {
 	SHOP,         # Regular shop
 	SUPER_SHOP,   # Super shop (malfunction reward)
 	REST,         # Restore some resources
-	BOSS          # Boss round with special challenge
+	BOSS,         # Boss round with special challenge
+	MALFUNCTION   # Malfunction event (can reward or challenge)
 }
 
 var type: NodeType

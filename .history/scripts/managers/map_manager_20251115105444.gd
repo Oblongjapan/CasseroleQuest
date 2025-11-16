@@ -2,11 +2,15 @@ extends Node
 class_name MapManager
 
 ## Manages the progression map generation and traversal (Slay the Spire style)
+## Supports both procedural generation and manual scene-based design
 
 var map_nodes: Array[Array] = []  # Array of tiers, each tier is an array of nodes
 var current_tier: int = 0
 var current_node: MapNodeModel = null
 var current_path: Array[MapNodeModel] = []  # Track path taken
+var ui_nodes_map: Dictionary = {}  # Maps MapNodeModel -> MapNodeUI
+
+@export var use_custom_map: bool = false  # If true, load from scene instead of generating
 
 const TIERS_PER_ACT: int = 15
 const MIN_NODES_PER_TIER: int = 2
@@ -14,6 +18,13 @@ const MAX_NODES_PER_TIER: int = 4
 
 signal node_selected(node: MapNodeModel)
 signal map_generated()
+
+## Generate or load the map
+func initialize_map(round_modifier_manager: RoundModifierManager, custom_nodes: Array[MapNodeUI] = []) -> void:
+	if use_custom_map and not custom_nodes.is_empty():
+		load_from_custom_nodes(custom_nodes, round_modifier_manager)
+	else:
+		generate_map(round_modifier_manager)
 
 ## Generate a new map for the run with branching paths
 func generate_map(round_modifier_manager: RoundModifierManager) -> void:
@@ -96,7 +107,57 @@ func _connect_branching_paths() -> void:
 				if i < available_targets.size():
 					node.connections.append(available_targets[i])
 
-## Select a node and make its connections available
+## Load map from manually-designed MapNodeUI nodes in the scene
+func load_from_custom_nodes(custom_nodes: Array[MapNodeUI], round_modifier_manager: RoundModifierManager) -> void:
+	map_nodes.clear()
+	current_tier = 0
+	current_node = null
+	current_path.clear()
+	ui_nodes_map.clear()
+	
+	# Create models from UI nodes
+	var all_models: Array[MapNodeModel] = []
+	for ui_node in custom_nodes:
+		var model = ui_node.create_model(round_modifier_manager)
+		all_models.append(model)
+		ui_nodes_map[model] = ui_node
+	
+	# Build connections between models based on UI node references
+	for ui_node in custom_nodes:
+		var model = null
+		for m in all_models:
+			if ui_nodes_map[m] == ui_node:
+				model = m
+				break
+		
+		if not model:
+			continue
+		
+		# Connect to the corresponding models
+		for connected_ui in ui_node.connected_node_refs:
+			for m in all_models:
+				if ui_nodes_map[m] == connected_ui:
+					model.connections.append(m)
+					break
+	
+	# Organize into tiers
+	var max_tier = 0
+	for model in all_models:
+		max_tier = max(max_tier, model.tier)
+	
+	# Initialize tier arrays
+	for i in range(max_tier + 1):
+		map_nodes.append([])
+	
+	# Sort models into tiers
+	for model in all_models:
+		map_nodes[model.tier].append(model)
+	
+	map_generated.emit()
+	print("[MapManager] Loaded custom map with %d tiers and %d nodes" % [max_tier + 1, all_models.size()])
+
+## Generate a new map for the run with branching paths
+func generate_map(round_modifier_manager: RoundModifierManager) -> void:
 func select_node(node: MapNodeModel) -> void:
 	if not node.is_available:
 		print("[MapManager] Cannot select unavailable node")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://c7y8vq3m1h8pc"]
+[gd_scene load_steps=42 format=3 uid="uid://c7y8vq3m1h8pc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]
@@ -13,9 +13,7 @@
 [ext_resource type="Script" path="res://scripts/ui/relic_display.gd" id="10_relic"]
 [ext_resource type="Texture2D" uid="uid://ci6vynp34d6jr" path="res://Assets/Items/Cover.png" id="11_3m25l"]
 [ext_resource type="PackedScene" uid="uid://3qxj67mhjg26" path="res://scenes/hand_selector.tscn" id="11_hand_scene"]
-[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="12_mainmenu"]
 [ext_resource type="Texture2D" uid="uid://5d01vp5cstuj" path="res://Assets/Food/Bread.png" id="13_2xncp"]
-[ext_resource type="Script" path="res://scripts/ui/round_complete_screen.gd" id="13_complete"]
 [ext_resource type="Script" path="res://scripts/ui/round_failed_screen.gd" id="14_failed"]
 [ext_resource type="Texture2D" uid="uid://iksorcaxhevv" path="res://Assets/Micro light.png" id="15_ev3b5"]
 [ext_resource type="Texture2D" uid="uid://v6t6l4wjocj5" path="res://Assets/Food/Spinach.png" id="15_qqcux"]
@@ -26,10 +24,8 @@
 [ext_resource type="Script" path="res://scripts/ui/ingredient_overlay.gd" id="19_overlay_script"]
 [ext_resource type="PackedScene" uid="uid://buohaoxbkhiqq" path="res://scenes/malfunction_popup.tscn" id="26_malfunction_popup"]
 [ext_resource type="PackedScene" uid="uid://w1pssmga7vlp" path="res://scenes/malfunction_relic_reward.tscn" id="27_malfunction_relic"]
-[ext_resource type="Script" path="res://scripts/ui/round_modifier_label.gd" id="27_ohsu1"]
-[ext_resource type="PackedScene" uid="uid://ytmqwqd02bw7" path="res://scenes/malfunction_macrowave_reward.tscn" id="28_malfunction_macrowave"]
 [ext_resource type="AudioStream" uid="uid://dhm6uvbxl2qo0" path="res://Assets/Audio/Music/WIP.mp3" id="29_music"]
-[ext_resource type="PackedScene" uid="uid://cejst23tjcm2k" path="res://scenes/map_ui.tscn" id="30_map"]
+[ext_resource type="PackedScene" uid="uid://csv6abwyhbiko" path="res://scenes/pause_menu.tscn" id="31_pause_menu"]
 
 [sub_resource type="Theme" id="Theme_v6nig"]
 
@@ -131,9 +127,6 @@ outline_color = Color(0.513726, 0.980392, 0.552941, 1)
 shadow_size = 2
 shadow_color = Color(0, 0, 0.141176, 0.784314)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lwsiv"]
-bg_color = Color(0.360784, 0, 0.494118, 1)
-
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
 
@@ -170,54 +163,6 @@ offset_bottom = 21.9909
 text = "Moisture"
 label_settings = SubResource("LabelSettings_hobxu")
 horizontal_alignment = 1
-
-[node name="MainMenu" type="Panel" parent="UI"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("12_mainmenu")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MainMenu"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -150.0
-offset_right = 200.0
-offset_bottom = 150.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-alignment = 1
-
-[node name="TitleLabel" type="Label" parent="UI/MainMenu/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "MICROWAVE WAVE"
-horizontal_alignment = 1
-
-[node name="TaglineLabel" type="Label" parent="UI/MainMenu/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "A Microwave's Thirst"
-horizontal_alignment = 1
-
-[node name="StartButton" type="Button" parent="UI/MainMenu/VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "START GAME"
-
-[node name="QuitButton" type="Button" parent="UI/MainMenu/VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "QUIT"
 
 [node name="Background" type="Sprite2D" parent="UI"]
 position = Vector2(640.5, 364.5)
@@ -389,62 +334,6 @@ visible = false
 layout_mode = 3
 anchors_preset = 0
 
-[node name="RoundCompleteScreen" type="Panel" parent="UI"]
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_lwsiv")
-script = ExtResource("13_complete")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/RoundCompleteScreen"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -200.0
-offset_right = 300.0
-offset_bottom = 200.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-alignment = 1
-
-[node name="TitleLabel" type="Label" parent="UI/RoundCompleteScreen/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "✅ ROUND COMPLETE! ✅"
-horizontal_alignment = 1
-
-[node name="MoistureLabel" type="Label" parent="UI/RoundCompleteScreen/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Moisture Remaining: 50"
-horizontal_alignment = 1
-
-[node name="CurrencyEarnedLabel" type="Label" parent="UI/RoundCompleteScreen/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Currency Earned: +50"
-horizontal_alignment = 1
-
-[node name="TotalCurrencyLabel" type="Label" parent="UI/RoundCompleteScreen/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Total Currency: 100"
-horizontal_alignment = 1
-
-[node name="ContinueButton" type="Button" parent="UI/RoundCompleteScreen/VBoxContainer"]
-custom_minimum_size = Vector2(250, 50)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "CONTINUE"
-
 [node name="RoundFailedScreen" type="Panel" parent="UI"]
 visible = false
 anchors_preset = 15
@@ -524,12 +413,6 @@ visible = false
 [node name="MalfunctionRelicReward" parent="UI" instance=ExtResource("27_malfunction_relic")]
 visible = false
 
-[node name="MalfunctionMacrowaveReward" parent="UI" instance=ExtResource("28_malfunction_macrowave")]
-visible = false
-
-[node name="MapUI" parent="UI" instance=ExtResource("30_map")]
-visible = false
-
 [node name="RelicDisplay" type="HBoxContainer" parent="UI"]
 offset_left = 488.0
 offset_top = 4.0
@@ -547,10 +430,10 @@ offset_bottom = 718.0
 text = "Speed: 1x"
 
 [node name="DeckTracker" type="Label" parent="UI"]
-offset_left = 954.0
-offset_top = 680.0
-offset_right = 1134.0
-offset_bottom = 720.0
+offset_left = 1074.0
+offset_top = 50.0
+offset_right = 1254.0
+offset_bottom = 90.0
 theme_override_font_sizes/font_size = 20
 text = "Deck: 10/10"
 horizontal_alignment = 1
@@ -558,28 +441,16 @@ vertical_alignment = 1
 script = ExtResource("16_deck")
 
 [node name="CurrencyLabel" type="Label" parent="UI"]
-offset_left = 20.0
-offset_top = 680.0
-offset_right = 200.0
-offset_bottom = 720.0
+offset_left = 1100.0
+offset_top = 5.0
+offset_right = 1280.0
+offset_bottom = 45.0
 theme_override_colors/font_color = Color(0.513726, 0.980392, 0.552941, 1)
 theme_override_font_sizes/font_size = 24
 text = "Currency: 0"
 vertical_alignment = 1
 
-[node name="RoundModifierLabel" type="Label" parent="UI"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -280.0
-offset_top = 10.0
-offset_right = -30.0
-offset_bottom = 40.0
-mouse_filter = 0
-theme_override_font_sizes/font_size = 18
-horizontal_alignment = 1
-vertical_alignment = 1
-script = ExtResource("27_ohsu1")
+[node name="PauseMenu" parent="UI" instance=ExtResource("31_pause_menu")]
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("29_music")
