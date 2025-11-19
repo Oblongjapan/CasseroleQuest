@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3 uid="uid://hvl5p1srn2e8"]
+
+[ext_resource type="Script" path="res://scripts/ui/recipe_notification.gd" id="1_recipe"]
+
+[node name="RecipeNotification" type="Panel"]
+offset_left = 340.0
+offset_top = 460.0
+offset_right = 740.0
+offset_bottom = 660.0
+script = ExtResource("1_recipe")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Recipe Discovered!"
+horizontal_alignment = 1
+
+[node name="RecipeNameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Chicken+Rice"
+horizontal_alignment = 1
+
+[node name="OKButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "OK"
+script = ExtResource("1_recipe")
