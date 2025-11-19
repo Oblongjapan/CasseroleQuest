@@ -46,16 +46,53 @@ func _populate_ingredients() -> void:
 		ingredient_grid.add_child(card)
 
 ## Create a single ingredient card button
-func _create_ingredient_card(ingredient: IngredientModel) -> Button:
+func _create_ingredient_card(ingredient: IngredientModel) -> Control:
+	# Use a VBoxContainer to hold sprite display and button
+	var container = VBoxContainer.new()
+	container.custom_minimum_size = Vector2(150, 140)
+	
+	# Add visual sprite representation at the top
+	var sprite_container = _create_ingredient_sprite_container([ingredient])
+	sprite_container.custom_minimum_size = Vector2(150, 40)
+	container.add_child(sprite_container)
+	
 	var card = Button.new()
-	card.custom_minimum_size = Vector2(150, 120)
+	card.custom_minimum_size = Vector2(150, 100)
 	card.text = "%s\n\n%s" % [ingredient.name, ingredient.get_stats_description()]
 	card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	
 	# Connect pressed signal
 	card.pressed.connect(_on_ingredient_card_pressed.bind(ingredient, card))
 	
-	return card
+	container.add_child(card)
+	return container
+
+## Create a visual ingredient sprite container
+func _create_ingredient_sprite_container(ingredients: Array[IngredientModel]) -> HBoxContainer:
+	var container = HBoxContainer.new()
+	container.alignment = BoxContainer.ALIGNMENT_CENTER
+	container.add_theme_constant_override("separation", -15)  # Overlap amount
+	
+	for ingredient in ingredients:
+		var panel = Panel.new()
+		panel.custom_minimum_size = Vector2(50, 35)
+		
+		var color_rect = ColorRect.new()
+		color_rect.custom_minimum_size = Vector2(50, 35)
+		color_rect.color = _get_ingredient_color(ingredient)
+		panel.add_child(color_rect)
+		
+		container.add_child(panel)
+	
+	return container
+
+## Generate a color for an ingredient based on its properties
+func _get_ingredient_color(ingredient: IngredientModel) -> Color:
+	var name_hash = ingredient.name.hash()
+	var hue = float(name_hash % 360) / 360.0
+	var saturation = 0.6 + (ingredient.water_content / 100.0) * 0.4
+	var value = 0.5 + (ingredient.density / 100.0) * 0.5
+	return Color.from_hsv(hue, saturation, value)
 
 ## Handle ingredient card selection
 func _on_ingredient_card_pressed(ingredient: IngredientModel, card: Button) -> void:

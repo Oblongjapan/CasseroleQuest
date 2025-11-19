@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://c7y8vq3m1h8pc"]
+[gd_scene load_steps=18 format=3 uid="uid://c7y8vq3m1h8pc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]
@@ -11,6 +11,8 @@
 [ext_resource type="Script" path="res://scripts/ui/active_item_button_ui.gd" id="8_item_button"]
 [ext_resource type="Script" path="res://scripts/ui/draft_selector.gd" id="9_draft"]
 [ext_resource type="Script" path="res://scripts/ui/relic_display.gd" id="10_relic"]
+[ext_resource type="Script" path="res://scripts/ui/plate_display.gd" id="11_plate"]
+[ext_resource type="Script" path="res://scripts/ui/ingredient_sprite_container.gd" id="12_sprite_container"]
 
 [sub_resource type="SystemFont" id="SystemFont_ft4j3"]
 font_names = PackedStringArray("Book Antiqua")
@@ -44,6 +46,37 @@ script = ExtResource("4_item")
 [node name="Background" type="Sprite2D" parent="UI"]
 position = Vector2(597, 386)
 texture = ExtResource("5_mf186")
+
+[node name="PlateDisplay" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -20.0
+offset_right = 100.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("11_plate")
+
+[node name="IngredientContainer" type="HBoxContainer" parent="UI/PlateDisplay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+script = ExtResource("12_sprite_container")
 
 [node name="MoistureBar" type="ProgressBar" parent="UI"]
 offset_left = 686.0

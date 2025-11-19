@@ -144,9 +144,13 @@ func _populate_draft_cards() -> void:
 		draft_grid.add_child(card)
 
 ## Create a single draft card button
-func _create_draft_card(item: Dictionary) -> Button:
+func _create_draft_card(item: Dictionary) -> Control:
+	# Use a VBoxContainer to hold button and sprite display
+	var container = VBoxContainer.new()
+	container.custom_minimum_size = Vector2(180, 160)
+	
 	var card = Button.new()
-	card.custom_minimum_size = Vector2(180, 140)
+	card.custom_minimum_size = Vector2(180, 120)
 	card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	
 	var item_name: String
@@ -159,6 +163,11 @@ func _create_draft_card(item: Dictionary) -> Button:
 			category_label = "[INGREDIENT]"
 			item_name = ingredient.name
 			item_info = ingredient.get_stats_description()
+			
+			# Add visual sprite representation for ingredients
+			var sprite_container = _create_ingredient_sprite_container([ingredient])
+			sprite_container.custom_minimum_size = Vector2(180, 40)
+			container.add_child(sprite_container)
 		ItemCategory.ACTIVE_ITEM:
 			var active_item: ActiveItem = item.data
 			category_label = "[ITEM]"
@@ -175,7 +184,35 @@ func _create_draft_card(item: Dictionary) -> Button:
 	# Connect pressed signal
 	card.pressed.connect(_on_draft_card_pressed.bind(item, card))
 	
-	return card
+	container.add_child(card)
+	return container
+
+## Create a visual ingredient sprite container
+func _create_ingredient_sprite_container(ingredients: Array[IngredientModel]) -> HBoxContainer:
+	var container = HBoxContainer.new()
+	container.alignment = BoxContainer.ALIGNMENT_CENTER
+	container.add_theme_constant_override("separation", -15)  # Overlap amount
+	
+	for ingredient in ingredients:
+		var panel = Panel.new()
+		panel.custom_minimum_size = Vector2(50, 35)
+		
+		var color_rect = ColorRect.new()
+		color_rect.custom_minimum_size = Vector2(50, 35)
+		color_rect.color = _get_ingredient_color(ingredient)
+		panel.add_child(color_rect)
+		
+		container.add_child(panel)
+	
+	return container
+
+## Generate a color for an ingredient based on its properties
+func _get_ingredient_color(ingredient: IngredientModel) -> Color:
+	var name_hash = ingredient.name.hash()
+	var hue = float(name_hash % 360) / 360.0
+	var saturation = 0.6 + (ingredient.water_content / 100.0) * 0.4
+	var value = 0.5 + (ingredient.density / 100.0) * 0.5
+	return Color.from_hsv(hue, saturation, value)
 
 ## Handle draft card selection
 func _on_draft_card_pressed(item: Dictionary, card: Button) -> void:
