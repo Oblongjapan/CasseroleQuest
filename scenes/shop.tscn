@@ -1,14 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://clyhmea0hq3cy"]
+[gd_scene load_steps=8 format=3 uid="uid://clyhmea0hq3cy"]
 
 [ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="1_f5vc7"]
 [ext_resource type="Script" path="res://scripts/ui/shop_screen.gd" id="1_shop"]
-[ext_resource type="Texture2D" uid="uid://bkgobhtrd7tcd" path="res://Assets/Background.png" id="2_tir4r"]
 [ext_resource type="PackedScene" uid="uid://0ol7onsorxuf" path="res://scenes/card_selector.tscn" id="3_card_selector"]
+[ext_resource type="Texture2D" uid="uid://bfo44a62482na" path="res://Assets/Fridge.png" id="3_fridge"]
 
-[sub_resource type="Theme" id="Theme_i6u8s"]
+[sub_resource type="Theme" id="Theme_mp8jc"]
 default_font = ExtResource("1_f5vc7")
 
-[sub_resource type="Theme" id="Theme_rvf8d"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_panel"]
+
+[sub_resource type="Theme" id="Theme_pgy3s"]
 
 [node name="ShopScreen" type="Panel"]
 anchors_preset = 15
@@ -16,54 +18,113 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = SubResource("Theme_i6u8s")
+theme = SubResource("Theme_mp8jc")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_panel")
 script = ExtResource("1_shop")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-z_index = 1
+[node name="Background" type="Sprite2D" parent="."]
+show_behind_parent = true
+z_index = -1
+position = Vector2(641, 360)
+texture = ExtResource("3_fridge")
+
+[node name="FreeSamplesLabel" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_left = -264.0
+offset_right = -264.0
+offset_bottom = 53.0
 grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="TitleLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.811765, 0.847059, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.0161835, 0.0670465, 0.0165197, 1)
+theme_override_constants/shadow_offset_x = -11
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 13
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 28
+text = "FREE SAMPLES 
+Take any 2"
 horizontal_alignment = 1
 
-[node name="ShopGrid" type="GridContainer" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme = SubResource("Theme_rvf8d")
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
-columns = 2
+[node name="FreeSamplesContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 216.0
+offset_right = 464.0
+offset_bottom = 600.0
+theme = SubResource("Theme_pgy3s")
+theme_override_constants/separation = 20
+alignment = 1
 
-[node name="CurrencyLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+[node name="ShopItemsLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 192.0
+offset_top = 16.0
+offset_right = 192.0
+offset_bottom = 46.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.698039, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = -11
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 9
+theme_override_constants/shadow_outline_size = 4
+theme_override_font_sizes/font_size = 20
+text = "FOR SALE"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 640.0
+offset_top = -8.0
+offset_right = -336.0
+offset_bottom = 528.0
+grow_horizontal = 2
+
+[node name="ShopItemsContainer" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="CurrencyLabel" type="Label" parent="."]
+z_index = 2
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -500.0
+offset_top = -51.0
+offset_right = -500.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_font_sizes/font_size = 24
 text = "💰 Currency: 100"
 horizontal_alignment = 1
 
-[node name="DoneButton" type="Button" parent="ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
-layout_mode = 2
-size_flags_horizontal = 4
+[node name="DoneButton" type="Button" parent="."]
+z_index = 2
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -60.0
+offset_right = 100.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_font_sizes/font_size = 24
-text = "DONE SHOPPING"
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.360784, 0, 0.494118, 1)
-position = Vector2(642.75, 364.5)
-scale = Vector2(1.0731, 1.06287)
-texture = ExtResource("2_tir4r")
+text = "DONE "
 
 [node name="CardSelector" parent="." instance=ExtResource("3_card_selector")]
 visible = false
