@@ -1,13 +1,13 @@
 [gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://b0ilq35gxqpvo"]
 
-[ext_resource type="FontFile" uid="uid://ba2bkl53mnydj" path="res://Assets/Fonts/Liquidism.ttf" id="1_gysw0"]
+[sub_resource type="SystemFont" id="SystemFont_t2u4u"]
+font_names = PackedStringArray("Poor Richard")
 
 [resource]
-font = ExtResource("1_gysw0")
-font_size = 83
-font_color = Color(0.921569, 0.0431373, 0, 1)
-outline_size = 1
-outline_color = Color(0.0980392, 0.12549, 0, 1)
+font = SubResource("SystemFont_t2u4u")
+font_size = 109
+outline_size = 10
+outline_color = Color(0.0431373, 0.0313726, 0.109804, 1)
 shadow_size = 8
 shadow_color = Color(0, 0, 0.352941, 0.843137)
 shadow_offset = Vector2(-5, 1)

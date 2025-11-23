@@ -119,16 +119,9 @@ When two or more ingredients are combined in the microwave:
 
 4. **`scripts/main.gd`**
    - Updated `_check_and_create_recipe()` to pass `current_tier` to `combine_ingredients()`
-   - Uses `count_total_base_ingredients()` to accurately count ingredients
    - Added tier restriction detection when recipe creation fails
    - Logs helpful messages showing recipes remaining until Tier 2 unlock
    - Ingredients returned to discard pile when blocked by tier restriction
-
-5. **`scripts/ui/hand_selector.gd`**
-   - **NEW:** Added duplicate ingredient prevention
-   - Checks if ingredient name is already selected before allowing selection
-   - Prevents selecting the same ingredient twice
-   - Logs message when duplicate selection is attempted
 
 ## How It Works
 

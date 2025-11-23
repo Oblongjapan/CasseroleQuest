@@ -8,6 +8,7 @@ db = 1
 
 [sub_resource type="AudioEffectPitchShift" id="AudioEffectPitchShift_cfwgf"]
 resource_name = "PitchShift"
+pitch_scale = 1.58
 fft_size = 1
 
 [sub_resource type="AudioEffectPhaser" id="AudioEffectPhaser_mr8rp"]

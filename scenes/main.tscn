@@ -411,7 +411,7 @@ visible = false
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("23_yftsh")
-pitch_scale = 1.5
+pitch_scale = 1.49
 autoplay = true
 mix_target = 1
 max_polyphony = 4

@@ -60,7 +60,6 @@ var game_speed: float = 3.0  # Default to 3x speed
 var current_round_ingredients: Array[IngredientModel] = []  # Track ingredients used this round
 var discovered_recipes_this_run: Array[String] = []  # Track which recipes have been shown this run
 var recipe_created_this_round: bool = false  # Track if recipe was successfully created
-var last_created_recipe: IngredientModel = null  # Store the last created recipe for notification
 
 func _ready():
 	print("[Main] _ready() starting...")
@@ -695,7 +694,6 @@ func _check_and_create_recipe() -> void:
 	
 	# Reset the flag at the start
 	recipe_created_this_round = false
-	last_created_recipe = null
 	
 	if current_round_ingredients.size() < 2:
 		print("[Main] Not enough ingredients for a recipe (need 2+)")
@@ -725,10 +723,6 @@ func _check_and_create_recipe() -> void:
 	var combined_ingredient = RecipesData.combine_ingredients(current_round_ingredients, current_tier)
 	if combined_ingredient:
 		print("[Main] Recipe created successfully: %s" % combined_ingredient.name)
-		
-		# Mark that recipe was successfully created
-		recipe_created_this_round = true
-		last_created_recipe = combined_ingredient  # Store for notification
 		
 		# Generate a unique recipe ID for tracking
 		var sorted_names = ingredient_names.duplicate()
@@ -843,40 +837,35 @@ func _fade_out_ingredients() -> void:
 func _show_recipe_notification() -> void:
 	print("[Main] _show_recipe_notification called")
 	
-	# Only show notification if recipe was actually created this round
-	if not recipe_created_this_round or not last_created_recipe:
-		print("[Main] No recipe was created this round (blocked or failed), skipping notification")
-		return
-	
 	# Check if a recipe was created this round (must be 2+ ingredients)
 	if current_round_ingredients.size() < 2:
 		print("[Main] Not enough ingredients for recipe notification. Size: %d" % current_round_ingredients.size())
 		return
 	
-	# Use the internal identity (with + signs) for tracking
-	var recipe_identity = last_created_recipe.name
-	print("[Main] Recipe identity: %s" % recipe_identity)
+	# Create the combined recipe name
+	var ingredient_names: Array[String] = []
+	for ingredient in current_round_ingredients:
+		ingredient_names.append(ingredient.name)
 	
-	# Get the display name for showing to player
-	var display_name = last_created_recipe.get_meta("display_name", recipe_identity)
-	print("[Main] Recipe display name: %s" % display_name)
+	var recipe_name = "+".join(ingredient_names)
+	print("[Main] Recipe created: %s" % recipe_name)
 	
 	# Check if this exact combo has already been discovered this run
-	if recipe_identity in discovered_recipes_this_run:
-		print("[Main] Recipe '%s' already discovered this run, skipping notification" % recipe_identity)
+	if recipe_name in discovered_recipes_this_run:
+		print("[Main] Recipe '%s' already discovered this run, skipping notification" % recipe_name)
 		return
 	
 	# Mark as discovered
-	discovered_recipes_this_run.append(recipe_identity)
-	print("[Main] First discovery of '%s' this run!" % recipe_identity)
+	discovered_recipes_this_run.append(recipe_name)
+	print("[Main] First discovery of '%s' this run!" % recipe_name)
 	
 	# Show the combo recipe in the microwave overlays (on plates with both ingredients)
-	_display_combo_in_microwave(recipe_identity)
+	_display_combo_in_microwave(recipe_name)
 	
-	# Show recipe notification using the scene with the friendly display name
+	# Show recipe notification using the scene
 	if recipe_notification:
-		print("[Main] Showing recipe notification panel for: %s" % display_name)
-		recipe_notification.show_notification(display_name)
+		print("[Main] Showing recipe notification panel for: %s" % recipe_name)
+		recipe_notification.show_notification(recipe_name)
 		await recipe_notification.notification_closed
 		print("[Main] Recipe notification closed")
 	else:

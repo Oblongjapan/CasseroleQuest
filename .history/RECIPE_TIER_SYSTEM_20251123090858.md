@@ -94,11 +94,8 @@ When two or more ingredients are combined in the microwave:
    - Added clear tier constants with ingredient count limits
    - `TIER_1_MAX_INGREDIENTS = 2` enforces the 2-ingredient limit
    - `TIER_2_UNLOCK_THRESHOLD = 6` requires 6 unique recipes
-   - **NEW:** `count_total_base_ingredients()` function counts actual ingredients (not just cards)
-     - Parses "+" symbols in ingredient names to count combined cards correctly
-     - Example: "Chicken+Rice" counts as 2 ingredients, not 1 card
    - Updated `combine_ingredients()` to accept `current_tier` parameter
-   - Blocks recipes based on base ingredient count (not card count)
+   - Blocks 3+ ingredient recipes if current tier < 2
    - Returns null and logs block message when tier restriction applies
 
 2. **`scripts/managers/progression_manager.gd`**
@@ -119,16 +116,9 @@ When two or more ingredients are combined in the microwave:
 
 4. **`scripts/main.gd`**
    - Updated `_check_and_create_recipe()` to pass `current_tier` to `combine_ingredients()`
-   - Uses `count_total_base_ingredients()` to accurately count ingredients
    - Added tier restriction detection when recipe creation fails
    - Logs helpful messages showing recipes remaining until Tier 2 unlock
    - Ingredients returned to discard pile when blocked by tier restriction
-
-5. **`scripts/ui/hand_selector.gd`**
-   - **NEW:** Added duplicate ingredient prevention
-   - Checks if ingredient name is already selected before allowing selection
-   - Prevents selecting the same ingredient twice
-   - Logs message when duplicate selection is attempted
 
 ## How It Works
 

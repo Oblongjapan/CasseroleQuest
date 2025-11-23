@@ -365,32 +365,6 @@ func _get_max_ingredients() -> int:
 	else:
 		return 2
 
-## Normalize ingredient name by removing "Organic " prefix
-func _normalize_ingredient_name(name: String) -> String:
-	return name.replace("Organic ", "")
-
-## Check if an ingredient (or any of its sub-ingredients) is already selected
-## Handles combined cards like "Chicken+Rice" and "Organic Salmon"
-func _is_ingredient_duplicate(new_ingredient_name: String) -> bool:
-	var normalized_new = _normalize_ingredient_name(new_ingredient_name)
-	
-	# Split the new ingredient into base ingredients (for combined cards)
-	var new_base_ingredients = normalized_new.split("+")
-	
-	# Check against all selected ingredients
-	for selected in selected_ingredients:
-		var normalized_selected = _normalize_ingredient_name(selected.name)
-		var selected_base_ingredients = normalized_selected.split("+")
-		
-		# Check if any base ingredient in the new card matches any in the selected cards
-		for new_base in new_base_ingredients:
-			for selected_base in selected_base_ingredients:
-				if new_base.strip_edges() == selected_base.strip_edges():
-					print("[HandSelector] ❌ Duplicate detected: '%s' conflicts with '%s'" % [new_base, selected_base])
-					return true
-	
-	return false
-
 ## Toggle card selection
 func _toggle_card_selection(ingredient: IngredientModel, card: IngredientCard) -> void:
 	if ingredient in selected_ingredients:
@@ -406,8 +380,14 @@ func _toggle_card_selection(ingredient: IngredientModel, card: IngredientCard) -
 		print("[HandSelector] Deselecting %s from overlay slot %d" % [ingredient.name, overlay_slot])
 		ingredient_deselected.emit(overlay_slot)
 	else:
-		# Check if this ingredient (or any of its base ingredients) is already selected
-		if _is_ingredient_duplicate(ingredient.name):
+		# Check if this ingredient is already selected (prevent duplicates)
+		var already_selected = false
+		for selected in selected_ingredients:
+			if selected.name == ingredient.name:
+				already_selected = true
+				break
+		
+		if already_selected:
 			print("[HandSelector] ❌ Cannot select duplicate ingredient: %s" % ingredient.name)
 			# TODO: Show feedback to player that duplicates aren't allowed
 			return

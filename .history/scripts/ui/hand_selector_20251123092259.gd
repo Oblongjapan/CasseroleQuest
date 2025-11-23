@@ -406,8 +406,14 @@ func _toggle_card_selection(ingredient: IngredientModel, card: IngredientCard) -
 		print("[HandSelector] Deselecting %s from overlay slot %d" % [ingredient.name, overlay_slot])
 		ingredient_deselected.emit(overlay_slot)
 	else:
-		# Check if this ingredient (or any of its base ingredients) is already selected
-		if _is_ingredient_duplicate(ingredient.name):
+		# Check if this ingredient is already selected (prevent duplicates)
+		var already_selected = false
+		for selected in selected_ingredients:
+			if selected.name == ingredient.name:
+				already_selected = true
+				break
+		
+		if already_selected:
 			print("[HandSelector] ❌ Cannot select duplicate ingredient: %s" % ingredient.name)
 			# TODO: Show feedback to player that duplicates aren't allowed
 			return

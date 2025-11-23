@@ -9,7 +9,7 @@ class_name IngredientCard
 @onready var water_label: Label = $CardPanel/VBoxContainer/StatsContainer/WaterLabel
 @onready var resist_label: Label = $CardPanel/VBoxContainer/StatsContainer/ResistLabel
 @onready var volatility_label: Label = $CardPanel/VBoxContainer/StatsContainer/VolatilityLabel
-@onready var food_sprite: Sprite2D = $CardPanel/VBoxContainer/Food
+@onready var food_sprite: Sprite2D = $CardPanel/VBoxContainer/FoodContainer/Food
 @onready var status_label: Label = null  # Removed from scene
 
 var ingredient: IngredientModel
@@ -48,31 +48,28 @@ func _ready():
 	custom_minimum_size = Vector2(180, 260)
 	size = Vector2(180, 260)
 	
-	print("[IngredientCard] Root Control mouse_filter: %s" % mouse_filter)
-	
 	# CRITICAL FIX: Make VBoxContainer pass through mouse events so dragging works
 	if card_panel:
-		print("[IngredientCard] CardPanel mouse_filter: %s" % card_panel.mouse_filter)
 		var vbox = card_panel.get_node_or_null("VBoxContainer")
 		if vbox:
-			print("[IngredientCard] VBoxContainer mouse_filter BEFORE: %s" % vbox.mouse_filter)
-			# Don't change it - let it stay as PASS (2) from scene
-			print("[IngredientCard] VBoxContainer mouse_filter AFTER: %s (not changed)" % vbox.mouse_filter)
+			vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			print("[IngredientCard] Set VBoxContainer mouse_filter to IGNORE for drag support")
 			
-			# Check StatsContainer
+			# Also set StatsContainer to IGNORE
 			var stats_container = vbox.get_node_or_null("StatsContainer")
 			if stats_container:
-				print("[IngredientCard] StatsContainer mouse_filter: %s" % stats_container.mouse_filter)
+				stats_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				print("[IngredientCard] Set StatsContainer mouse_filter to IGNORE")
 			
-			# Check all children
-			print("[IngredientCard] VBoxContainer children:")
+			# Set all Labels to IGNORE as well
 			for child in vbox.get_children():
-				print("  - %s: mouse_filter=%s" % [child.name, child.mouse_filter if "mouse_filter" in child else "N/A"])
-	
-	# CRITICAL: Make sprite ignore mouse input so clicks pass through to card
-	if food_sprite:
-		food_sprite.set_meta("_edit_lock_", false)  # Ensure it's not locked
-		print("[IngredientCard] Food sprite configured - Sprite2D nodes don't block input by default")
+				if child is Label:
+					child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			if stats_container:
+				for child in stats_container.get_children():
+					if child is Label:
+						child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			print("[IngredientCard] Set all Labels to IGNORE for complete drag support")
 	
 	# Get the style from the panel
 	if card_panel:
@@ -100,9 +97,6 @@ func _ready():
 	mouse_exited.connect(_on_mouse_exited)
 	gui_input.connect(_on_gui_input)
 	
-	print("[IngredientCard] === MOUSE EVENT CONNECTIONS SET UP ===")
-	print("[IngredientCard] Connected to mouse_entered, mouse_exited, gui_input signals")
-	
 	# Setup hover timer for food sprite
 	hover_timer = Timer.new()
 	hover_timer.wait_time = 3.0
@@ -112,14 +106,6 @@ func _ready():
 	
 	# Setup hover detection area for food sprite
 	_setup_sprite_hover_detection()
-
-## Override _gui_input to catch all input directly
-func _gui_input(event: InputEvent) -> void:
-	print("[IngredientCard] _gui_input() OVERRIDE called!")
-	print("[IngredientCard] Event: %s" % event)
-	if event is InputEventMouseButton:
-		print("[IngredientCard] MouseButton - button: %s, pressed: %s, position: %s" % [event.button_index, event.pressed, event.position])
-	_on_gui_input(event)
 
 ## Setup card with ingredient data
 func setup(ing: IngredientModel, upgrade_desc: String = "") -> void:
@@ -149,16 +135,7 @@ func setup(ing: IngredientModel, upgrade_desc: String = "") -> void:
 	
 	# Set name
 	if name_label:
-		# Check if there's a display name (for recipes with friendly names)
-		var display_name = ingredient.get_meta("display_name", "")
-		print("[IngredientCard] Ingredient internal name: '%s'" % ingredient.name)
-		print("[IngredientCard] Display name from metadata: '%s'" % display_name)
-		if display_name.is_empty():
-			name_label.text = ingredient.name
-			print("[IngredientCard] Using internal name")
-		else:
-			name_label.text = display_name
-			print("[IngredientCard] Using display name")
+		name_label.text = ingredient.name
 		print("[IngredientCard] Set name_label.text to: %s" % name_label.text)
 	else:
 		print("[IngredientCard] ERROR: name_label is null!")
@@ -351,19 +328,15 @@ func get_card_style() -> StyleBoxFlat:
 	return card_style
 
 func _on_mouse_entered() -> void:
-	print("[IngredientCard] Mouse entered: %s" % (ingredient.name if ingredient else "no ingredient"))
+	print("[IngredientCard] Mouse entered: %s" % ingredient.name if ingredient else "no ingredient")
 	card_hovered.emit(self)
 
 func _on_mouse_exited() -> void:
-	print("[IngredientCard] Mouse exited: %s" % (ingredient.name if ingredient else "no ingredient"))
+	print("[IngredientCard] Mouse exited: %s" % ingredient.name if ingredient else "no ingredient")
 	card_unhovered.emit(self)
 
 func _on_gui_input(event: InputEvent) -> void:
-	print("[IngredientCard] ===== GUI INPUT RECEIVED =====")
-	print("[IngredientCard] Event type: %s" % event.get_class())
-	print("[IngredientCard] Ingredient: %s" % (ingredient.name if ingredient else "no ingredient"))
-	if event is InputEventMouseButton:
-		print("[IngredientCard] Mouse button: %s, pressed: %s" % [event.button_index, event.pressed])
+	print("[IngredientCard] GUI input: %s on %s" % [event, ingredient.name if ingredient else "no ingredient"])
 	card_input_event.emit(event, self)
 
 ## Setup hover detection for the food sprite

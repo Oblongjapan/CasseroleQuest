@@ -157,6 +157,7 @@ func _create_shop_ingredient_sprite(item: Dictionary) -> Control:
 	var food_sprite = TextureButton.new()
 	food_sprite.custom_minimum_size = Vector2(300, 300)
 	food_sprite.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	food_sprite.expand_mode = TextureButton.EXPAND_IGNORE_SIZE
 	food_sprite.ignore_texture_size = true
 	food_sprite.texture_normal = texture
 	
@@ -305,7 +306,7 @@ func _on_shop_item_hover_start(item: Dictionary, container: Control, is_sample: 
 		hover_button.pressed.connect(_on_hover_take_pressed)
 	else:
 		var cost = item.get("cost", 0)
-		hover_button.text = "BUY %d" % cost
+		hover_button.text = "BUY (%d)" % cost
 		if currency_manager and currency_manager.get_currency() < cost:
 			hover_button.disabled = true
 		hover_button.pressed.connect(_on_hover_buy_pressed)

@@ -157,6 +157,7 @@ func _create_shop_ingredient_sprite(item: Dictionary) -> Control:
 	var food_sprite = TextureButton.new()
 	food_sprite.custom_minimum_size = Vector2(300, 300)
 	food_sprite.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	food_sprite.expand_mode = TextureButton.EXPAND_IGNORE_SIZE
 	food_sprite.ignore_texture_size = true
 	food_sprite.texture_normal = texture
 	
@@ -227,22 +228,18 @@ func _create_free_sample_panel(item: Dictionary) -> Control:
 	var container = Control.new()
 	container.custom_minimum_size = Vector2(120, 180)
 	
+	# Create food sprite
+	var food_sprite = TextureRect.new()
+	food_sprite.custom_minimum_size = Vector2(300, 300)
+	food_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	food_sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	
 	# Load food texture
 	var ingredient_name = item.get("name", "Unknown")
 	var texture_path = "res://Assets/Food/%s.png" % ingredient_name
 	var texture = load(texture_path)
-	
-	# Create food sprite using TextureButton for pixel-perfect detection
-	var food_sprite = TextureButton.new()
-	food_sprite.custom_minimum_size = Vector2(300, 300)
-	food_sprite.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	food_sprite.ignore_texture_size = true
-	food_sprite.texture_normal = texture
-	
-	# Create click mask from texture for pixel-perfect detection
 	if texture:
-		var click_mask = _create_click_mask_from_texture(texture)
-		food_sprite.texture_click_mask = click_mask
+		food_sprite.texture = texture
 	
 	container.add_child(food_sprite)
 	food_sprite.position = Vector2(10, 10)
@@ -250,6 +247,9 @@ func _create_free_sample_panel(item: Dictionary) -> Control:
 	# Connect hover signals - only the food sprite triggers hover
 	food_sprite.mouse_entered.connect(func(): _on_shop_item_hover_start(item, container, true))
 	food_sprite.mouse_exited.connect(func(): _on_shop_item_hover_end())
+	
+	# Make sure the sprite receives mouse events
+	food_sprite.mouse_filter = Control.MOUSE_FILTER_STOP
 	
 	return container
 
@@ -305,7 +305,7 @@ func _on_shop_item_hover_start(item: Dictionary, container: Control, is_sample: 
 		hover_button.pressed.connect(_on_hover_take_pressed)
 	else:
 		var cost = item.get("cost", 0)
-		hover_button.text = "BUY %d" % cost
+		hover_button.text = "BUY (%d)" % cost
 		if currency_manager and currency_manager.get_currency() < cost:
 			hover_button.disabled = true
 		hover_button.pressed.connect(_on_hover_buy_pressed)
@@ -424,18 +424,6 @@ func _on_upgrade_needs_target(upgrade_data: Dictionary) -> void:
 	print("[ShopScreen] Opening card selector for upgrade")
 	if card_selector:
 		card_selector.open_with_upgrade(upgrade_data, fridge_manager)
-
-## Create a click mask from texture for pixel-perfect detection
-func _create_click_mask_from_texture(texture: Texture2D) -> BitMap:
-	var bitmap = BitMap.new()
-	var image = texture.get_image()
-	
-	if image == null:
-		return bitmap
-	
-	# Create bitmap from image alpha channel
-	bitmap.create_from_image_alpha(image, 0.1)
-	return bitmap
 
 ## Handle when card is selected for upgrade
 func _on_card_selected_for_upgrade(ingredient_name: String) -> void:

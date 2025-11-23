@@ -149,16 +149,7 @@ func setup(ing: IngredientModel, upgrade_desc: String = "") -> void:
 	
 	# Set name
 	if name_label:
-		# Check if there's a display name (for recipes with friendly names)
-		var display_name = ingredient.get_meta("display_name", "")
-		print("[IngredientCard] Ingredient internal name: '%s'" % ingredient.name)
-		print("[IngredientCard] Display name from metadata: '%s'" % display_name)
-		if display_name.is_empty():
-			name_label.text = ingredient.name
-			print("[IngredientCard] Using internal name")
-		else:
-			name_label.text = display_name
-			print("[IngredientCard] Using display name")
+		name_label.text = ingredient.name
 		print("[IngredientCard] Set name_label.text to: %s" % name_label.text)
 	else:
 		print("[IngredientCard] ERROR: name_label is null!")

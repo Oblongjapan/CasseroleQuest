@@ -1,8 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://53ua1gtfjdy"]
+[gd_scene load_steps=11 format=3 uid="uid://53ua1gtfjdy"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_3rrcy"]
 [ext_resource type="LabelSettings" uid="uid://b0ilq35gxqpvo" path="res://scenes/Drippy Red.tres" id="2_ga2t2"]
-[ext_resource type="Texture2D" uid="uid://bb136r58842di" path="res://Assets/MainBackground.png" id="2_sxo76"]
 [ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="2_vhqma"]
 [ext_resource type="LabelSettings" uid="uid://ctxq6c6w22vr1" path="res://scenes/ClockOrange.tres" id="3_6t28o"]
 
@@ -86,14 +85,14 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3rrcy")
 
-[node name="ColorRect" type="TextureRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_sxo76")
+color = Color(0.08, 0.05, 0.15, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -119,7 +118,7 @@ theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 72
-text = "Casserole Quest"
+text = "MYSTICROWAVE"
 label_settings = ExtResource("2_ga2t2")
 horizontal_alignment = 1
 
@@ -130,9 +129,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 20
-text = "The Essential
-Microwave
- Cookbook"
+text = "ENCHANTED APPLIANCE"
 label_settings = ExtResource("3_6t28o")
 horizontal_alignment = 1
 
@@ -143,8 +140,8 @@ layout_mode = 2
 [node name="StartButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.9, 0.7, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.4, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_pressed_color = Color(0.8, 0, 0, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
@@ -155,26 +152,11 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
 theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
 text = "START GAME"
 
-[node name="Compendium" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(300, 60)
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.9, 0.7, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.4, 0.9, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("2_vhqma")
-theme_override_font_sizes/font_size = 32
-theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
-theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
-text = "Recipe Book"
-
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.7, 0.5, 0.9, 1)
-theme_override_colors/font_pressed_color = Color(0.5, 0.3, 0.7, 1)
+theme_override_colors/font_hover_color = Color(1, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.5, 0, 0, 1)
 theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3

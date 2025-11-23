@@ -285,23 +285,23 @@ func combine_ingredients(ingredients: Array[IngredientModel], current_tier: int 
 	# MAXIMUM INGREDIENT LIMIT: No recipe can have more than 8 ingredients
 	if total_base_ingredients > ABSOLUTE_MAX_INGREDIENTS:
 		print("[RecipesData] ❌ BLOCKED: Recipe has %d ingredients! Maximum is %d." % [total_base_ingredients, ABSOLUTE_MAX_INGREDIENTS])
-		print("[RecipesData] ❌ Maximum 8 ingredients per recipe!")
+		EventBus.show_notification.emit("Maximum 8 ingredients per recipe!", Color.RED)
 		return null
 	
 	# TIER RESTRICTIONS: Check if this combination is allowed based on current tier
 	if current_tier < 2 and total_base_ingredients > TIER_1_MAX_INGREDIENTS:
 		print("[RecipesData] ❌ BLOCKED: %d-ingredient recipe requires Tier 2! (Current: Tier %d)" % [total_base_ingredients, current_tier])
-		print("[RecipesData] ❌ Need Tier 2 for 3+ ingredient recipes!")
+		EventBus.show_notification.emit("Need Tier 2 for 3+ ingredient recipes!", Color.RED)
 		return null
 	
 	if current_tier < 3 and total_base_ingredients > TIER_2_MAX_INGREDIENTS:
 		print("[RecipesData] ❌ BLOCKED: %d-ingredient recipe requires Tier 3! (Current: Tier %d)" % [total_base_ingredients, current_tier])
-		print("[RecipesData] ❌ Need Tier 3 for 5+ ingredient recipes!")
+		EventBus.show_notification.emit("Need Tier 3 for 5+ ingredient recipes!", Color.RED)
 		return null
 	
 	if current_tier < 4 and total_base_ingredients > TIER_3_MAX_INGREDIENTS:
 		print("[RecipesData] ❌ BLOCKED: %d-ingredient recipe requires Tier 4! (Current: Tier %d)" % [total_base_ingredients, current_tier])
-		print("[RecipesData] ❌ Need Tier 4 for 7+ ingredient recipes!")
+		EventBus.show_notification.emit("Need Tier 4 for 7+ ingredient recipes!", Color.RED)
 		return null
 	
 	# Debug: Print all input ingredients

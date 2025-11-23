@@ -695,7 +695,6 @@ func _check_and_create_recipe() -> void:
 	
 	# Reset the flag at the start
 	recipe_created_this_round = false
-	last_created_recipe = null
 	
 	if current_round_ingredients.size() < 2:
 		print("[Main] Not enough ingredients for a recipe (need 2+)")

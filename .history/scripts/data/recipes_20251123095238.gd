@@ -105,29 +105,29 @@ func _initialize_recipes():
 	# More complex recipes can be added here
 	recipes["mega_bowl"] = RecipeModel.new(
 		"mega_bowl",
-		"Chicken Broccoli Bowl",
+		"Mega Bowl",
 		["Chicken Breast", "Rice", "Broccoli"],
 		140,  # water_content (50 + 30 + 60 = 140)
 		55,  # heat_resistance
 		12   # volatility
 	)
 
-	recipes["chicken_sandwhich"] = RecipeModel.new(
+	recipes["Chicken Sandwhich"] = RecipeModel.new(
 		"chicken_sandwhich",
-		"Chicken Sandwich",
+		"Chicken Sandwhich",
 		["Chicken Breast", "Bread"],
 		83,  # water_content (50 + 33 = 83)
 		50,  # heat_resistance
 		11.5    # volatility
 	)
 
-	recipes["hot_chicken_sandwhich"] = RecipeModel.new(
-		"hot_chicken_sandwhich",
-		"Hot Chicken Sandwich",
-		["Chicken Sandwich", "Peas"],
-		153,  # water_content (83 + 70 = 153)
-		45,  # heat_resistance
-		9.5   # volatility
+	recipes["Hot Chicken Sandwhich"] = RecipeModel.new(
+        "hot_chicken_sandwhich",
+        "Hot Chicken Sandwhich",
+        ["Chicken Sandwhich", "Peas"],
+        153,  # water_content (83 + 70 = 153)
+        45,  # heat_resistance
+        9.5   # volatility
 	)
 	
 ## Get a recipe by ID
@@ -285,23 +285,23 @@ func combine_ingredients(ingredients: Array[IngredientModel], current_tier: int 
 	# MAXIMUM INGREDIENT LIMIT: No recipe can have more than 8 ingredients
 	if total_base_ingredients > ABSOLUTE_MAX_INGREDIENTS:
 		print("[RecipesData] ❌ BLOCKED: Recipe has %d ingredients! Maximum is %d." % [total_base_ingredients, ABSOLUTE_MAX_INGREDIENTS])
-		print("[RecipesData] ❌ Maximum 8 ingredients per recipe!")
+		EventBus.show_notification.emit("Maximum 8 ingredients per recipe!", Color.RED)
 		return null
 	
 	# TIER RESTRICTIONS: Check if this combination is allowed based on current tier
 	if current_tier < 2 and total_base_ingredients > TIER_1_MAX_INGREDIENTS:
 		print("[RecipesData] ❌ BLOCKED: %d-ingredient recipe requires Tier 2! (Current: Tier %d)" % [total_base_ingredients, current_tier])
-		print("[RecipesData] ❌ Need Tier 2 for 3+ ingredient recipes!")
+		EventBus.show_notification.emit("Need Tier 2 for 3+ ingredient recipes!", Color.RED)
 		return null
 	
 	if current_tier < 3 and total_base_ingredients > TIER_2_MAX_INGREDIENTS:
 		print("[RecipesData] ❌ BLOCKED: %d-ingredient recipe requires Tier 3! (Current: Tier %d)" % [total_base_ingredients, current_tier])
-		print("[RecipesData] ❌ Need Tier 3 for 5+ ingredient recipes!")
+		EventBus.show_notification.emit("Need Tier 3 for 5+ ingredient recipes!", Color.RED)
 		return null
 	
 	if current_tier < 4 and total_base_ingredients > TIER_3_MAX_INGREDIENTS:
 		print("[RecipesData] ❌ BLOCKED: %d-ingredient recipe requires Tier 4! (Current: Tier %d)" % [total_base_ingredients, current_tier])
-		print("[RecipesData] ❌ Need Tier 4 for 7+ ingredient recipes!")
+		EventBus.show_notification.emit("Need Tier 4 for 7+ ingredient recipes!", Color.RED)
 		return null
 	
 	# Debug: Print all input ingredients
@@ -327,13 +327,7 @@ func combine_ingredients(ingredients: Array[IngredientModel], current_tier: int 
 	print("[RecipesData] Totals: Water=%d, RST total=%d, Vol total=%d" % [total_water, total_heat_resistance, total_volatility])
 	print("[RecipesData] Averages: RST=%d, Vol=%d" % [avg_heat_resistance, avg_volatility])
 	
-	# Create combined identity using + signs (for internal tracking and sprite loading)
-	var ingredient_names: Array[String] = []
-	for ingredient in ingredients:
-		ingredient_names.append(ingredient.name)
-	var combined_identity = "+".join(ingredient_names)
-	
-	# Get all individual ingredient names for display name generation
+	# Get all individual ingredient names (flatten combined ingredients)
 	var all_ingredient_names: Array[String] = []
 	for ingredient in ingredients:
 		# Split by "+" to handle combined ingredients
@@ -342,26 +336,18 @@ func combine_ingredients(ingredients: Array[IngredientModel], current_tier: int 
 			var clean_name = part.strip_edges().replace("Organic ", "")
 			all_ingredient_names.append(clean_name)
 	
-	# Generate the friendly display name based on ingredients
-	var display_name = get_recipe_name_for_ingredients(all_ingredient_names)
+	# Generate the recipe name based on ingredients
+	var recipe_name = get_recipe_name_for_ingredients(all_ingredient_names)
 	
-	print("[RecipesData] Creating recipe:")
-	print("[RecipesData]   Identity (internal): '%s'" % combined_identity)
-	print("[RecipesData]   Display Name: '%s'" % display_name)
+	print("[RecipesData] Creating recipe: '%s'" % recipe_name)
 	print("[RecipesData] Final stats: Water=%d, RST=%d, Vol=%d" % [total_water, avg_heat_resistance, avg_volatility])
 	
-	# Create the ingredient with identity as name, but store display name as metadata
-	var new_ingredient = IngredientModel.new(
-		combined_identity,
+	return IngredientModel.new(
+		recipe_name,
 		total_water,
 		avg_heat_resistance,
 		avg_volatility
 	)
-	
-	# Store the display name as metadata
-	new_ingredient.set_meta("display_name", display_name)
-	
-	return new_ingredient
 
 ## Get the current unlocked tier based on total recipes created
 func get_unlocked_tier(total_recipes: int) -> int:
