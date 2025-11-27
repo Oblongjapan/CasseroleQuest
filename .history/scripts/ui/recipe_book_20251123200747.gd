@@ -1,0 +1,288 @@
+extends Panel
+
+## Recipe Book UI - Shows all possible recipes organized by tier with paging
+
+@onready var page_label: Label = $VBox/BottomBar/PageLabel
+@onready var prev_button: Button = $VBox/BottomBar/PrevButton
+@onready var next_button: Button = $VBox/BottomBar/NextButton
+@onready var close_button: Button = $VBox/TopBar/CloseButton
+@onready var recipe_grid: GridContainer = $VBox/ScrollContainer/RecipeGrid
+@onready var tier_label: Label = $VBox/TierLabel
+
+const RecipeBookEntryScene = preload("res://scenes/recipe_book_entry.tscn")
+const RECIPES_PER_PAGE = 8
+
+var recipe_book_manager: RecipeBookManager
+var all_recipes: Array[Dictionary] = []  # All possible recipes organized by tier
+var current_page: int = 0
+var total_pages: int = 0
+
+signal book_closed
+
+func _ready():
+	print("[RecipeBook] _ready() called")
+	print("[RecipeBook] Panel class: ", get_class())
+	print("[RecipeBook] Visible: ", visible)
+	print("[RecipeBook] Modulate: ", modulate)
+	print("[RecipeBook] Z-index: ", z_index)
+	
+	prev_button.pressed.connect(_on_prev_pressed)
+	next_button.pressed.connect(_on_next_pressed)
+	close_button.pressed.connect(_on_close_pressed)
+	
+	# Make sure recipe book appears on top
+	z_index = 100
+	
+	# Check if style is applied
+	var panel_style = get_theme_stylebox("panel")
+	print("[RecipeBook] Panel style: ", panel_style)
+	if panel_style is StyleBoxFlat:
+		var flat_style = panel_style as StyleBoxFlat
+		print("[RecipeBook] Style bg_color: ", flat_style.bg_color)
+	
+	hide()
+	print("[RecipeBook] _ready() complete")
+
+## Initialize the recipe book with all possible recipes
+func setup(manager: RecipeBookManager):
+	print("[RecipeBook] setup() called")
+	recipe_book_manager = manager
+	print("[RecipeBook] Manager assigned: ", manager != null)
+	_build_recipe_list()
+	_calculate_pages()
+	current_page = 0
+	_display_current_page()
+	print("[RecipeBook] setup() complete")
+
+## Build the complete list of all possible recipes from RecipesData
+func _build_recipe_list():
+	print("[RecipeBook] _build_recipe_list() called")
+	all_recipes.clear()
+	
+	# TIER 1: Get all 2-ingredient combinations using BASE ingredients only
+	var tier_1_recipes: Array[Dictionary] = []
+	var base_ingredients = RecipesData.BASE_INGREDIENTS
+	print("[RecipeBook] Base ingredients count: ", base_ingredients.size())
+	print("[RecipeBook] Base ingredients: ", base_ingredients)
+	
+	for i in range(base_ingredients.size()):
+		for j in range(i + 1, base_ingredients.size()):
+			var ing1 = base_ingredients[i]
+			var ing2 = base_ingredients[j]
+			var identity = ing1 + "+" + ing2
+			var ingredients_array: Array[String] = [ing1, ing2]
+			var display_name = RecipesData.get_recipe_name_for_ingredients(ingredients_array)
+			
+			tier_1_recipes.append({
+				"identity": identity,
+				"display_name": display_name,
+				"ingredients": ingredients_array,
+				"tier": 1
+			})
+	
+	# Sort Tier 1 recipes by display name
+	tier_1_recipes.sort_custom(func(a, b): return a["display_name"] < b["display_name"])
+	all_recipes.append_array(tier_1_recipes)
+	print("[RecipeBook] Generated %d tier 1 recipes" % tier_1_recipes.size())
+	
+	# TIER 2+: Add some popular 3-ingredient combinations (with premium ingredients)
+	var tier_2_recipes: Array[Dictionary] = []
+	var all_ingredients = RecipesData.TIER_0_INGREDIENTS  # Base + Premium
+	
+	# Add hand-picked 3-ingredient recipes (examples of what's possible)
+	var popular_3_combos: Array = [
+		["Chicken Breast", "Rice", "Salmon"],
+		["Chicken Breast", "Potato", "Spinach"],
+		["Lettuce", "Steak", "Tofu"],
+		["Bread", "Chicken Breast", "Lettuce"],
+		["Broccoli", "Chicken Breast", "Rice"],
+		["Carrot", "Chicken Breast", "Peas"],
+		["Chicken Breast", "Rice", "Spinach"],
+		["Asparagus", "Chicken Breast", "Rice"],
+		["Bread", "Lettuce", "Tofu"],
+		["Peas", "Rice", "Tofu"],
+	]
+	
+	for combo in popular_3_combos:
+		var typed_combo: Array[String] = []
+		typed_combo.assign(combo)
+		var sorted_combo: Array[String] = []
+		sorted_combo.assign(typed_combo)
+		sorted_combo.sort()
+		var identity = "+".join(sorted_combo)
+		var display_name = RecipesData.get_recipe_name_for_ingredients(typed_combo)
+		
+		tier_2_recipes.append({
+			"identity": identity,
+			"display_name": display_name,
+			"ingredients": combo,
+			"tier": 2
+		})
+	
+	tier_2_recipes.sort_custom(func(a, b): return a["display_name"] < b["display_name"])
+	all_recipes.append_array(tier_2_recipes)
+	print("[RecipeBook] Generated %d tier 2 recipes" % tier_2_recipes.size())
+	
+	# TIER 3: Add some 4-5 ingredient combinations
+	var tier_3_recipes: Array[Dictionary] = []
+	var popular_4_5_combos = [
+		["Broccoli", "Carrot", "Chicken Breast", "Rice"],
+		["Chicken Breast", "Rice", "Salmon", "Spinach"],
+		["Bread", "Chicken Breast", "Lettuce", "Peas"],
+		["Broccoli", "Carrot", "Chicken Breast", "Peas", "Rice"],
+		["Bread", "Chicken Breast", "Lettuce", "Peas", "Spinach"],
+		["Asparagus", "Broccoli", "Carrot", "Chicken Breast", "Rice"],
+	]
+	
+	for combo in popular_4_5_combos:
+		var sorted_combo = combo.duplicate()
+		sorted_combo.sort()
+		var identity = "+".join(sorted_combo)
+		var display_name = RecipesData.get_recipe_name_for_ingredients(combo)
+		
+		tier_3_recipes.append({
+			"identity": identity,
+			"display_name": display_name,
+			"ingredients": combo,
+			"tier": 3
+		})
+	
+	tier_3_recipes.sort_custom(func(a, b): return a["display_name"] < b["display_name"])
+	all_recipes.append_array(tier_3_recipes)
+	print("[RecipeBook] Generated %d tier 3 recipes" % tier_3_recipes.size())
+	
+	# TIER 4: Add some 6+ ingredient combinations
+	var tier_4_recipes: Array[Dictionary] = []
+	var popular_6_plus_combos = [
+		["Broccoli", "Carrot", "Chicken Breast", "Peas", "Potato", "Rice"],
+		["Asparagus", "Broccoli", "Carrot", "Chicken Breast", "Peas", "Rice"],
+		["Chicken Breast", "Lettuce", "Peas", "Rice", "Salmon", "Spinach"],
+		["Asparagus", "Broccoli", "Carrot", "Chicken Breast", "Peas", "Potato", "Rice"],
+	]
+	
+	for combo in popular_6_plus_combos:
+		var sorted_combo = combo.duplicate()
+		sorted_combo.sort()
+		var identity = "+".join(sorted_combo)
+		var display_name = RecipesData.get_recipe_name_for_ingredients(combo)
+		
+		tier_4_recipes.append({
+			"identity": identity,
+			"display_name": display_name,
+			"ingredients": combo,
+			"tier": 4
+		})
+	
+	tier_4_recipes.sort_custom(func(a, b): return a["display_name"] < b["display_name"])
+	all_recipes.append_array(tier_4_recipes)
+	print("[RecipeBook] Generated %d tier 4 recipes" % tier_4_recipes.size())
+	
+	print("[RecipeBook] Built recipe list with %d total recipes across all tiers" % all_recipes.size())
+
+## Calculate total pages needed
+func _calculate_pages():
+	total_pages = ceili(float(all_recipes.size()) / float(RECIPES_PER_PAGE))
+	if total_pages == 0:
+		total_pages = 1
+	print("[RecipeBook] Total pages: %d" % total_pages)
+
+## Display the current page of recipes
+func _display_current_page():
+	print("[RecipeBook] _display_current_page() called")
+	print("[RecipeBook] Current page: %d / %d" % [current_page, total_pages])
+	print("[RecipeBook] Total recipes: %d" % all_recipes.size())
+	
+	# Null check for recipe_grid
+	if not recipe_grid:
+		print("[RecipeBook] ERROR: recipe_grid is null!")
+		return
+	
+	# Clear existing entries
+	for child in recipe_grid.get_children():
+		child.queue_free()
+	
+	print("[RecipeBook] Cleared %d existing children from grid" % recipe_grid.get_child_count())
+	
+	# Calculate recipe range for this page
+	var start_idx = current_page * RECIPES_PER_PAGE
+	var end_idx = mini(start_idx + RECIPES_PER_PAGE, all_recipes.size())
+	
+	# Determine tier for this page
+	var page_tier = 1
+	if all_recipes.size() > 0 and start_idx < all_recipes.size():
+		page_tier = all_recipes[start_idx]["tier"]
+	
+	# Update tier label
+	tier_label.text = "TIER %d RECIPES" % page_tier
+	
+	# Add recipe entries
+	for i in range(start_idx, end_idx):
+		var recipe_data = all_recipes[i]
+		var is_discovered = recipe_book_manager.is_discovered(recipe_data["identity"])
+		
+		print("[RecipeBook] Adding recipe %d: %s (discovered: %s)" % [i, recipe_data["display_name"], is_discovered])
+		
+		var entry = RecipeBookEntryScene.instantiate()
+		recipe_grid.add_child(entry)
+		entry.setup(
+			recipe_data["identity"],
+			recipe_data["display_name"],
+			recipe_data["ingredients"],
+			is_discovered
+		)
+	
+	print("[RecipeBook] Added %d recipe entries to grid" % (end_idx - start_idx))
+	
+	# Update navigation
+	page_label.text = "Page %d / %d" % [current_page + 1, total_pages]
+	prev_button.disabled = (current_page == 0)
+	next_button.disabled = (current_page >= total_pages - 1)
+	
+	print("[RecipeBook] Displaying page %d (%d-%d)" % [current_page + 1, start_idx, end_idx])
+
+## Open the recipe book
+func open_book():
+	print("[RecipeBook] open_book() called")
+	print("[RecipeBook] recipe_book_manager exists: ", recipe_book_manager != null)
+	print("[RecipeBook] Position: ", position)
+	print("[RecipeBook] Size: ", size)
+	print("[RecipeBook] Global position: ", global_position)
+	
+	if recipe_book_manager:
+		_build_recipe_list()  # Rebuild to catch any new discoveries
+		_calculate_pages()
+		_display_current_page()
+	else:
+		print("[RecipeBook] ERROR: No recipe_book_manager!")
+	
+	show()
+	
+	print("[RecipeBook] After show():")
+	print("[RecipeBook] Visible: ", visible)
+	print("[RecipeBook] Is inside tree: ", is_inside_tree())
+	print("[RecipeBook] Parent: ", get_parent())
+	print("[RecipeBook] Children count: ", get_child_count())
+	
+	# Check VBox
+	var vbox = $VBox
+	print("[RecipeBook] VBox exists: ", vbox != null)
+	if vbox:
+		print("[RecipeBook] VBox visible: ", vbox.visible)
+		print("[RecipeBook] VBox size: ", vbox.size)
+		print("[RecipeBook] VBox position: ", vbox.position)
+	
+	print("[RecipeBook] Book is now visible")
+
+func _on_prev_pressed():
+	if current_page > 0:
+		current_page -= 1
+		_display_current_page()
+
+func _on_next_pressed():
+	if current_page < total_pages - 1:
+		current_page += 1
+		_display_current_page()
+
+func _on_close_pressed():
+	hide()
+	book_closed.emit()

@@ -1,0 +1,83 @@
+[gd_scene load_steps=9 format=3 uid="uid://clyhmea0hq3cy"]
+
+[ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="1_f5vc7"]
+[ext_resource type="Script" path="res://scripts/ui/shop_screen.gd" id="1_shop"]
+[ext_resource type="PackedScene" uid="uid://0ol7onsorxuf" path="res://scenes/card_selector.tscn" id="3_card_selector"]
+[ext_resource type="Texture2D" uid="uid://cf43kwvioyadc" path="res://Assets/Shop Background.png" id="3_j4qmv"]
+[ext_resource type="PackedScene" uid="uid://bx8vn3h4kqp2m" path="res://scenes/visual_shop_grid.tscn" id="5_visual_grid"]
+
+[sub_resource type="Theme" id="Theme_mp8jc"]
+default_font = ExtResource("1_f5vc7")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p6bki"]
+
+[sub_resource type="Theme" id="Theme_rvf8d"]
+
+[node name="ShopScreen" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_mp8jc")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p6bki")
+script = ExtResource("1_shop")
+
+[node name="CurrencyLabel" type="Label" parent="."]
+layout_mode = 2
+offset_left = 7.0
+offset_top = 679.0
+offset_right = 1287.0
+offset_bottom = 709.0
+theme_override_font_sizes/font_size = 24
+text = "💰 Currency: 100"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TitleLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+
+[node name="ShopGrid" type="GridContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = SubResource("Theme_rvf8d")
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="DoneButton" type="Button" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "DONE SHOPPING"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 0.498039, 1)
+position = Vector2(626, 366)
+scale = Vector2(1.0731, 1.06287)
+texture = ExtResource("3_j4qmv")
+
+[node name="CardSelector" parent="." instance=ExtResource("3_card_selector")]
+visible = false
+z_index = 100
+layout_mode = 1

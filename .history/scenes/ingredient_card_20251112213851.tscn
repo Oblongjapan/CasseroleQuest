@@ -1,0 +1,106 @@
+[gd_scene load_steps=8 format=3 uid="uid://cjuyaj7j50xyv"]
+
+[ext_resource type="Script" path="res://scripts/ui/ingredient_card.gd" id="1_card"]
+[ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="2_pj660"]
+[ext_resource type="Texture2D" uid="uid://da0fvo33warpf" path="res://Assets/Ingredient.png" id="3_137s6"]
+[ext_resource type="Texture2D" path="res://Assets/New folder/Broccoli.png" id="4_dd4wx"]
+
+[sub_resource type="Theme" id="Theme_byyo8"]
+default_font = ExtResource("2_pj660")
+default_font_size = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3snp5"]
+texture = ExtResource("3_137s6")
+
+[sub_resource type="LabelSettings" id="LabelSettings_27wma"]
+font_color = Color(0.0313726, 0.0941176, 0.12549, 1)
+
+[node name="IngredientCard" type="Control"]
+custom_minimum_size = Vector2(180, 260)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 180.0
+offset_bottom = 260.0
+script = ExtResource("1_card")
+
+[node name="CardPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -62.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_byyo8")
+theme_override_styles/panel = SubResource("StyleBoxTexture_3snp5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CardPanel"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="CardPanel/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+text = "Ingredient Name"
+label_settings = SubResource("LabelSettings_27wma")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Spacer1" type="Control" parent="CardPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="UpgradeLabel" type="Label" parent="CardPanel/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Spacer2" type="Control" parent="CardPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Food" type="Sprite2D" parent="CardPanel/VBoxContainer"]
+position = Vector2(88, 90)
+texture = ExtResource("4_dd4wx")
+
+[node name="StatsContainer" type="VBoxContainer" parent="CardPanel/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="WaterLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Moisture Content"
+mouse_filter = 2
+theme_override_font_sizes/font_size = 10
+text = "Water: 50"
+label_settings = SubResource("LabelSettings_27wma")
+horizontal_alignment = 1
+
+[node name="ResistLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Resistance to heat drain. Higher=less drain/second"
+theme_override_font_sizes/font_size = 10
+text = "Rst: 50"
+label_settings = SubResource("LabelSettings_27wma")
+horizontal_alignment = 1
+
+[node name="VolatilityLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Volatility is applied to drain rate. Higher Vol = faster drain rate"
+theme_override_font_sizes/font_size = 10
+text = "Vol: 5"
+label_settings = SubResource("LabelSettings_27wma")
+horizontal_alignment = 1
+autowrap_mode = 2

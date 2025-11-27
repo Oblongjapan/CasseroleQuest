@@ -1,0 +1,132 @@
+extends Node
+class_name FridgeManager
+
+## Manages the fridge deck system - drawing, discarding, and reshuffling ingredients
+
+var deck: Array[IngredientModel] = []
+var discard_pile: Array[IngredientModel] = []
+var ingredient_upgrades: Dictionary = {}  # ingredient_name -> {stat_name: upgrade_amount}
+
+signal deck_shuffled()
+signal ingredients_drawn(ingredients: Array[IngredientModel])
+
+## Initialize fridge with starting 10 ingredients
+func initialize_starting_deck() -> void:
+	deck.clear()
+	discard_pile.clear()
+	ingredient_upgrades.clear()
+	
+	# Get all 8 base ingredients
+	var all_ingredients = IngredientsData.get_all_ingredients()
+	
+	# Add 10 cards (some duplicates)
+	# Using first 8 unique, then add 2 random duplicates
+	for i in range(min(8, all_ingredients.size())):
+		deck.append(all_ingredients[i].duplicate())
+	
+	# Add 2 more random cards from the pool
+	all_ingredients.shuffle()
+	for i in range(2):
+		if i < all_ingredients.size():
+			deck.append(all_ingredients[i].duplicate())
+	
+	# Shuffle the deck
+	deck.shuffle()
+	print("[FridgeManager] Initialized deck with %d cards" % deck.size())
+
+## Draw N cards from the top of the deck
+func draw_cards(count: int) -> Array[IngredientModel]:
+	var drawn: Array[IngredientModel] = []
+	
+	for i in range(count):
+		if deck.is_empty():
+			_reshuffle_discard_into_deck()
+		
+		if not deck.is_empty():
+			var card = deck.pop_front()
+			# Apply any upgrades to this card
+			_apply_upgrades_to_card(card)
+			drawn.append(card)
+	
+	ingredients_drawn.emit(drawn)
+	print("[FridgeManager] Drew %d cards, %d remaining in deck" % [drawn.size(), deck.size()])
+	return drawn
+
+## Discard cards after use
+func discard_cards(cards: Array[IngredientModel]) -> void:
+	for card in cards:
+		discard_pile.append(card)
+	print("[FridgeManager] Discarded %d cards, discard pile now has %d" % [cards.size(), discard_pile.size()])
+
+## Reshuffle discard pile back into deck
+func _reshuffle_discard_into_deck() -> void:
+	if discard_pile.is_empty():
+		print("[FridgeManager] Warning: Both deck and discard pile are empty!")
+		return
+	
+	print("[FridgeManager] Deck empty! Reshuffling discard pile (%d cards)" % discard_pile.size())
+	deck = discard_pile.duplicate()
+	discard_pile.clear()
+	deck.shuffle()
+	deck_shuffled.emit()
+
+## Upgrade an ingredient permanently
+## ingredient_name: e.g., "Chicken Breast"
+## stat_name: "water", "heat", or "spice"
+## amount: how much to add (can be negative)
+func upgrade_ingredient(ingredient_name: String, stat_name: String, amount: int) -> void:
+	if not ingredient_upgrades.has(ingredient_name):
+		ingredient_upgrades[ingredient_name] = {}
+	
+	if not ingredient_upgrades[ingredient_name].has(stat_name):
+		ingredient_upgrades[ingredient_name][stat_name] = 0
+	
+	ingredient_upgrades[ingredient_name][stat_name] += amount
+	print("[FridgeManager] Upgraded %s: %s +%d (total: %d)" % [
+		ingredient_name, 
+		stat_name, 
+		amount, 
+		ingredient_upgrades[ingredient_name][stat_name]
+	])
+
+## Apply all accumulated upgrades to a card
+func _apply_upgrades_to_card(card: IngredientModel) -> void:
+	if not ingredient_upgrades.has(card.name):
+		return
+	
+	var upgrades = ingredient_upgrades[card.name]
+	
+	if upgrades.has("water"):
+		card.water_content += upgrades["water"]
+	if upgrades.has("heat"):
+		card.heat_resistance += upgrades["heat"]
+	if upgrades.has("spice"):
+		card.volatility += upgrades["spice"]
+
+## Get upgrade tier for an ingredient (for display)
+func get_upgrade_description(ingredient_name: String) -> String:
+	if not ingredient_upgrades.has(ingredient_name):
+		return ""
+	
+	var upgrades = ingredient_upgrades[ingredient_name]
+	var parts: Array[String] = []
+	
+	if upgrades.has("water") and upgrades["water"] != 0:
+		parts.append("Water %+d" % upgrades["water"])
+	if upgrades.has("heat") and upgrades["heat"] != 0:
+		parts.append("Heat %+d" % upgrades["heat"])
+	if upgrades.has("spice") and upgrades["spice"] != 0:
+		parts.append("Spice %+d" % upgrades["spice"])
+	
+	if parts.is_empty():
+		return ""
+	return "(" + ", ".join(parts) + ")"
+
+## Add a new ingredient permanently to the deck
+func add_ingredient_to_deck(ingredient: IngredientModel) -> void:
+	deck.append(ingredient.duplicate())
+	print("[FridgeManager] Added %s to deck" % ingredient.name)
+
+## Get deck status for debugging
+func get_status() -> String:
+	return "Deck: %d | Discard: %d" % [deck.size(), discard_pile.size()]

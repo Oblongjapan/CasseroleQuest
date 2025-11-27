@@ -1,0 +1,462 @@
+[gd_scene load_steps=37 format=3 uid="uid://c7y8vq3m1h8pc"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]
+[ext_resource type="Script" path="res://scripts/managers/timer_manager.gd" id="3_timer"]
+[ext_resource type="Texture2D" uid="uid://dixdnonwj03lv" path="res://Assets/New Micro.png" id="5_x2led"]
+[ext_resource type="Texture2D" uid="uid://bkgobhtrd7tcd" path="res://Assets/Background.png" id="6_goj73"]
+[ext_resource type="Script" path="res://scripts/ui/moisture_bar_ui.gd" id="6_moisture_ui"]
+[ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="7_g5a3o"]
+[ext_resource type="FontFile" uid="uid://b5iw0672ajqxn" path="res://Assets/Fonts/alarm clock.ttf" id="7_gj5d8"]
+[ext_resource type="Script" path="res://scripts/ui/timer_display_ui.gd" id="7_timer_ui"]
+[ext_resource type="PackedScene" uid="uid://cimfb2qrls561" path="res://scenes/hand_selector.tscn" id="11_hand_scene"]
+[ext_resource type="Texture2D" uid="uid://5d01vp5cstuj" path="res://Assets/Food/Bread.png" id="13_2xncp"]
+[ext_resource type="Script" path="res://scripts/ui/round_failed_screen.gd" id="14_failed"]
+[ext_resource type="Texture2D" uid="uid://v6t6l4wjocj5" path="res://Assets/Food/Spinach.png" id="15_qqcux"]
+[ext_resource type="Script" path="res://scripts/ui/deck_tracker_ui.gd" id="16_deck"]
+[ext_resource type="Script" path="res://scripts/ui/microwave_start_button.gd" id="17_microwave_button"]
+[ext_resource type="PackedScene" uid="uid://dkw504nf6ftp3" path="res://scenes/game_over_screen.tscn" id="18_game_over_scene"]
+[ext_resource type="Script" path="res://scripts/ui/ingredient_overlay.gd" id="19_overlay_script"]
+[ext_resource type="AudioStream" uid="uid://bhc7wvr0pr32y" path="res://Assets/Audio/Music/bgm.mp3" id="23_yftsh"]
+[ext_resource type="AudioStream" uid="uid://qxqene6i710k" path="res://Assets/Audio/Sound effects/onbeep.wav" id="24_beep_sound"]
+[ext_resource type="AudioStream" uid="uid://dkj0lm4n3tjo8" path="res://Assets/Audio/Sound effects/Microhum.wav" id="25_hum_sound"]
+[ext_resource type="PackedScene" uid="uid://du7uwou6t11e1" path="res://scenes/malfunction_popup.tscn" id="26_malfunction_popup"]
+[ext_resource type="PackedScene" path="res://scenes/malfunction_relic_reward.tscn" id="27_malfunction_relic"]
+[ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="31_pause_menu"]
+[ext_resource type="PackedScene" uid="uid://c1bcoi085tiw7" path="res://scenes/recipe_card_reveal.tscn" id="32_recipe_card_reveal"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vgjlf"]
+atlas = ExtResource("5_x2led")
+region = Rect2(0, 0, 377, 211)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ept1y"]
+atlas = ExtResource("5_x2led")
+region = Rect2(1131, 0, 377, 211)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0d7t"]
+atlas = ExtResource("5_x2led")
+region = Rect2(377, 0, 377, 211)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w6pb1"]
+atlas = ExtResource("5_x2led")
+region = Rect2(754, 0, 377, 211)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s84sg"]
+atlas = ExtResource("5_x2led")
+region = Rect2(1508, 0, 377, 211)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_em16f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vgjlf")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ept1y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f0d7t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w6pb1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s84sg")
+}],
+"loop": true,
+"name": &"On",
+"speed": 60.0
+}]
+
+[sub_resource type="Theme" id="Theme_v6nig"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_daymt"]
+font = ExtResource("7_gj5d8")
+font_size = 18
+font_color = Color(0.988235, 0.403922, 0, 1)
+outline_size = 3
+outline_color = Color(0.0923971, 0.0923971, 0.0923971, 1)
+shadow_size = 3
+shadow_color = Color(0.176471, 0.176471, 0.176471, 1)
+shadow_offset = Vector2(-1, -0.295)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hobxu"]
+font = ExtResource("7_g5a3o")
+font_size = 7
+font_color = Color(0.513726, 0.980392, 0.552941, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_52bdf"]
+font = ExtResource("7_gj5d8")
+font_size = 10
+font_color = Color(0.4, 1, 0.5, 1)
+shadow_size = 5
+shadow_color = Color(0, 0, 0.141176, 1)
+shadow_offset = Vector2(-1, 2)
+
+[sub_resource type="SystemFont" id="SystemFont_pi4nj"]
+font_names = PackedStringArray("Poor Richard")
+font_weight = 100
+oversampling = 2.2
+
+[sub_resource type="LabelSettings" id="LabelSettings_e2s5p"]
+font = SubResource("SystemFont_pi4nj")
+font_size = 20
+font_color = Color(0.933069, 0, 0.137291, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Main" type="Node"]
+script = ExtResource("1_main")
+shop_camera_zoom = Vector2(1.4, 1.4)
+
+[node name="CookRound" type="Node" parent="."]
+
+[node name="MoistureManager" type="Node" parent="CookRound"]
+script = ExtResource("2_moisture")
+
+[node name="TimerManager" type="Node" parent="CookRound"]
+script = ExtResource("3_timer")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(1300.18, 385.943)
+scale = Vector2(1.07185, 1.06287)
+texture = ExtResource("6_goj73")
+
+[node name="Microwave" type="AnimatedSprite2D" parent="Background"]
+position = Vector2(-590.739, -12.9931)
+sprite_frames = SubResource("SpriteFrames_em16f")
+animation = &"Idle"
+speed_scale = 2.0
+
+[node name="Timer" type="ColorRect" parent="Background/Microwave"]
+visibility_layer = 3
+offset_left = 57.8439
+offset_top = -105.375
+offset_right = 170.844
+offset_bottom = -72.3751
+scale = Vector2(1.11194, 1.11194)
+theme = SubResource("Theme_v6nig")
+color = Color(0.32549, 0.454902, 0.427451, 0)
+metadata/_edit_use_anchors_ = true
+
+[node name="TimerDisplay" type="Label" parent="Background/Microwave/Timer"]
+layout_mode = 0
+offset_left = 6.71235
+offset_top = 13.5381
+offset_right = 106.712
+offset_bottom = 38.5381
+theme_override_font_sizes/font_size = 32
+text = "00:15"
+label_settings = SubResource("LabelSettings_daymt")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("7_timer_ui")
+metadata/_edit_use_anchors_ = true
+
+[node name="ONButton" type="Button" parent="Background/Microwave"]
+z_index = 10
+offset_left = 81.1681
+offset_top = 42.3382
+offset_right = 154.168
+offset_bottom = 77.3382
+theme_override_colors/font_color = Color(0.513726, 0.980392, 0.552941, 1)
+theme_override_fonts/font = ExtResource("7_g5a3o")
+theme_override_font_sizes/font_size = 13
+text = "START"
+script = ExtResource("17_microwave_button")
+ingredient_selector_path = NodePath("../../../UI/HandSelector")
+metadata/_edit_use_anchors_ = true
+
+[node name="PowerLVL" type="ColorRect" parent="Background/Microwave"]
+visibility_layer = 3
+offset_left = 83.967
+offset_top = -95.0257
+offset_right = 153.967
+offset_bottom = -86.0257
+theme = SubResource("Theme_v6nig")
+color = Color(1, 1, 1, 0.0117647)
+metadata/_edit_use_anchors_ = true
+
+[node name="PowerLvl" type="Label" parent="Background/Microwave/PowerLVL"]
+layout_mode = 0
+offset_left = -22.3912
+offset_top = -0.940845
+offset_right = 97.6086
+offset_bottom = 19.0591
+text = "PWR 9001"
+label_settings = SubResource("LabelSettings_hobxu")
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="IngredientOverlay1" type="Sprite2D" parent="Background/Microwave"]
+visible = false
+position = Vector2(-99.8274, 47.9833)
+scale = Vector2(0.528668, 0.556549)
+texture = ExtResource("13_2xncp")
+script = ExtResource("19_overlay_script")
+
+[node name="IngredientOverlay2" type="Sprite2D" parent="Background/Microwave"]
+visible = false
+position = Vector2(2.79889, 48.9241)
+scale = Vector2(0.529, 0.529)
+texture = ExtResource("15_qqcux")
+script = ExtResource("19_overlay_script")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MoistureBar" type="ProgressBar" parent="UI"]
+offset_left = 754.0
+offset_top = 408.0
+offset_right = 873.0
+offset_bottom = 446.0
+rotation = -1.5708
+scale = Vector2(0.674951, 2.04155)
+max_value = 10000.0
+show_percentage = false
+script = ExtResource("6_moisture_ui")
+metadata/_edit_use_anchors_ = true
+
+[node name="MoistureLabel" type="Label" parent="UI/MoistureBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 82.7327
+offset_top = -37.1233
+offset_right = 159.733
+offset_bottom = -22.1233
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 1.57079
+scale = Vector2(0.988643, 2.87638)
+text = "0/0"
+label_settings = SubResource("LabelSettings_52bdf")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="StatusLabel" type="Label" parent="UI"]
+offset_left = 341.0
+offset_top = 378.133
+offset_right = 891.0
+offset_bottom = 408.133
+theme_override_font_sizes/font_size = 20
+text = "Drag ingredients here to start!"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="HandSelector" parent="UI" instance=ExtResource("11_hand_scene")]
+offset_left = 540.0
+offset_top = 653.0
+offset_right = 540.0
+offset_bottom = 653.0
+size_flags_horizontal = 3
+
+[node name="CookingUI" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+
+[node name="RoundFailedScreen" type="Panel" parent="UI"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("14_failed")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/RoundFailedScreen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="UI/RoundFailedScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "❌ ROUND FAILED ❌"
+horizontal_alignment = 1
+
+[node name="MoistureLabel" type="Label" parent="UI/RoundFailedScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Moisture Reached: 0 / 100"
+horizontal_alignment = 1
+
+[node name="TimeLabel" type="Label" parent="UI/RoundFailedScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Failed at: 8.5s"
+horizontal_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="UI/RoundFailedScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Your food dried out!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="UI/RoundFailedScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="RetryButton" type="Button" parent="UI/RoundFailedScreen/VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "RETRY"
+
+[node name="MenuButton" type="Button" parent="UI/RoundFailedScreen/VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "MENU"
+
+[node name="ShopUI" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 21.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="UI/ShopUI"]
+layout_mode = 0
+offset_left = 500.0
+offset_top = 100.0
+offset_right = 780.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 32
+text = "FREE SAMPLES!"
+horizontal_alignment = 1
+
+[node name="SampleButton1" type="TextureButton" parent="UI/ShopUI"]
+layout_mode = 0
+offset_left = 341.0
+offset_top = 313.0
+offset_right = 704.0
+offset_bottom = 650.0
+stretch_mode = 5
+
+[node name="SampleButton2" type="TextureButton" parent="UI/ShopUI"]
+layout_mode = 0
+offset_left = 602.0
+offset_top = 308.0
+offset_right = 985.0
+offset_bottom = 673.0
+stretch_mode = 5
+
+[node name="SampleButton3" type="TextureButton" parent="UI/ShopUI"]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 73.0
+offset_right = 831.0
+offset_bottom = 485.0
+stretch_mode = 5
+
+[node name="ExitButton" type="Button" parent="UI/ShopUI"]
+layout_mode = 0
+offset_left = 540.0
+offset_top = 581.0
+offset_right = 740.0
+offset_bottom = 641.0
+theme_override_font_sizes/font_size = 20
+text = "Continue"
+
+[node name="GameOverScreen" parent="UI" instance=ExtResource("18_game_over_scene")]
+visible = false
+
+[node name="MalfunctionPopup" parent="UI" instance=ExtResource("26_malfunction_popup")]
+visible = false
+
+[node name="MalfunctionRelicReward" parent="UI" instance=ExtResource("27_malfunction_relic")]
+visible = false
+
+[node name="SpeedButton" type="Button" parent="UI"]
+visible = false
+offset_left = 1136.0
+offset_top = 678.0
+offset_right = 1276.0
+offset_bottom = 718.0
+text = "Speed: 1x"
+
+[node name="DeckTracker" type="Label" parent="UI"]
+offset_left = 817.0
+offset_top = 162.0
+offset_right = 997.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(0.792157, 0.301961, 0.0588235, 1)
+theme_override_font_sizes/font_size = 20
+text = "10/10"
+label_settings = SubResource("LabelSettings_e2s5p")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("16_deck")
+
+[node name="CurrencyLabel" type="Label" parent="UI"]
+offset_left = 851.0
+offset_top = 94.0
+offset_right = 1031.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "Currency: 0"
+vertical_alignment = 1
+
+[node name="TierProgressLabel" type="Label" parent="UI"]
+offset_left = 851.0
+offset_top = 130.0
+offset_right = 1031.0
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(0.3, 0.15, 0.5, 1)
+theme_override_font_sizes/font_size = 16
+text = "Tier 1: 0/6"
+vertical_alignment = 1
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("31_pause_menu")]
+visible = false
+
+[node name="RecipeCardReveal" parent="UI" instance=ExtResource("32_recipe_card_reveal")]
+visible = false
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("23_yftsh")
+volume_db = -9.874
+pitch_scale = 1.49
+autoplay = true
+mix_target = 1
+max_polyphony = 4
+parameters/looping = true
+
+[node name="BeepPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("24_beep_sound")
+volume_db = 12.711
+
+[node name="HumPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("25_hum_sound")
+volume_db = -12.723
+pitch_scale = 1.21
+
+[node name="MainCamera" type="Camera2D" parent="."]
+position = Vector2(640, 360)

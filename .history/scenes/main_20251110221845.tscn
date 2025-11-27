@@ -1,0 +1,491 @@
+[gd_scene load_steps=22 format=3 uid="uid://c7y8vq3m1h8pc"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]
+[ext_resource type="Script" path="res://scripts/managers/timer_manager.gd" id="3_timer"]
+[ext_resource type="Script" path="res://scripts/managers/active_item_manager.gd" id="4_item"]
+[ext_resource type="Texture2D" uid="uid://pa4rle7q6niv" path="res://Assets/Microwave.png" id="5_mf186"]
+[ext_resource type="Script" path="res://scripts/ui/ingredient_selector.gd" id="5_selector"]
+[ext_resource type="Script" path="res://scripts/ui/moisture_bar_ui.gd" id="6_moisture_ui"]
+[ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="7_g5a3o"]
+[ext_resource type="Script" path="res://scripts/ui/timer_display_ui.gd" id="7_timer_ui"]
+[ext_resource type="Script" path="res://scripts/ui/active_item_button_ui.gd" id="8_item_button"]
+[ext_resource type="Script" path="res://scripts/ui/draft_selector.gd" id="9_draft"]
+[ext_resource type="Script" path="res://scripts/ui/relic_display.gd" id="10_relic"]
+[ext_resource type="Script" path="res://scripts/ui/hand_selector.gd" id="11_hand"]
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="12_mainmenu"]
+
+[sub_resource type="Theme" id="Theme_2hget"]
+default_font = ExtResource("7_g5a3o")
+default_font_size = 17
+
+[sub_resource type="SystemFont" id="SystemFont_ft4j3"]
+font_names = PackedStringArray("Book Antiqua")
+
+[sub_resource type="Theme" id="Theme_d47by"]
+default_font = SubResource("SystemFont_ft4j3")
+default_font_size = 15
+
+[sub_resource type="LabelSettings" id="LabelSettings_4xaxt"]
+font_size = 32
+font_color = Color(0.686275, 0.835294, 0.356863, 1)
+
+[sub_resource type="Theme" id="Theme_4ullb"]
+
+[sub_resource type="Theme" id="Theme_v6nig"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_daymt"]
+font = ExtResource("7_g5a3o")
+font_size = 20
+font_color = Color(0.513726, 0.980392, 0.552941, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hobxu"]
+font = ExtResource("7_g5a3o")
+font_color = Color(0.513726, 0.980392, 0.552941, 1)
+
+[node name="Main" type="Node"]
+script = ExtResource("1_main")
+
+[node name="CookRound" type="Node" parent="."]
+
+[node name="MoistureManager" type="Node" parent="CookRound"]
+script = ExtResource("2_moisture")
+
+[node name="TimerManager" type="Node" parent="CookRound"]
+script = ExtResource("3_timer")
+
+[node name="ItemManager" type="Node" parent="CookRound"]
+script = ExtResource("4_item")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="Panel" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("12_mainmenu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/MainMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="UI/MainMenu/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "MICROWAVE WAVE"
+horizontal_alignment = 1
+
+[node name="TaglineLabel" type="Label" parent="UI/MainMenu/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "A Microwave's Thirst"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="UI/MainMenu/VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "START GAME"
+
+[node name="QuitButton" type="Button" parent="UI/MainMenu/VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "QUIT"
+
+[node name="Background" type="Sprite2D" parent="UI"]
+position = Vector2(640.5, 364.5)
+scale = Vector2(1.07185, 1.06287)
+texture = ExtResource("5_mf186")
+
+[node name="MoistureBar" type="ProgressBar" parent="UI"]
+offset_left = 1239.0
+offset_top = 380.0
+offset_right = 1503.0
+offset_bottom = 405.0
+rotation = -1.5708
+max_value = 1000.0
+show_percentage = false
+script = ExtResource("6_moisture_ui")
+
+[node name="MoistureLabel" type="Label" parent="UI/MoistureBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -14.5
+offset_right = 52.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="UI"]
+offset_left = 393.0
+offset_top = 661.0
+offset_right = 943.0
+offset_bottom = 691.0
+theme_override_font_sizes/font_size = 20
+text = "Select ingredients to start!"
+horizontal_alignment = 1
+
+[node name="ActiveItemsContainer" type="VBoxContainer" parent="UI"]
+modulate = Color(0.513726, 0.980392, 0.552941, 1)
+offset_left = 1071.0
+offset_top = 308.0
+offset_right = 1204.0
+offset_bottom = 441.0
+theme = SubResource("Theme_2hget")
+theme_override_constants/separation = 11
+
+[node name="ActiveItemButton_1" type="Button" parent="UI/ActiveItemsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cover"
+autowrap_mode = 2
+script = ExtResource("8_item_button")
+
+[node name="ActiveItemButton_2" type="Button" parent="UI/ActiveItemsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stir"
+script = ExtResource("8_item_button")
+item_index = 1
+
+[node name="ActiveItemButton_3" type="Button" parent="UI/ActiveItemsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Blow"
+script = ExtResource("8_item_button")
+item_index = 2
+
+[node name="IngredientSelector" type="Panel" parent="UI"]
+visible = false
+modulate = Color(1, 0.988235, 1, 1)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -610.0
+offset_top = -309.0
+offset_right = -178.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_d47by")
+script = ExtResource("5_selector")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/IngredientSelector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="UI/IngredientSelector/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Select up to 2 Ingredients"
+label_settings = SubResource("LabelSettings_4xaxt")
+horizontal_alignment = 1
+
+[node name="IngredientGrid" type="GridContainer" parent="UI/IngredientSelector/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme = SubResource("Theme_4ullb")
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 29
+columns = 2
+
+[node name="DrainPreviewLabel" type="Label" parent="UI/IngredientSelector/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="UI/IngredientSelector/VBoxContainer"]
+layout_mode = 2
+text = "Select 2 Ingredients"
+
+[node name="HandSelector" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("11_hand")
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/HandSelector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/HandSelector/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="TopPanel" type="Panel" parent="UI/HandSelector/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1200, 100)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/HandSelector/CenterContainer/VBoxContainer/TopPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="UI/HandSelector/CenterContainer/VBoxContainer/TopPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Starting Hand"
+horizontal_alignment = 1
+
+[node name="InfoLabel" type="Label" parent="UI/HandSelector/CenterContainer/VBoxContainer/TopPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Select 2 ingredients to cook • 1 will return to deck"
+horizontal_alignment = 1
+
+[node name="HandContainer" type="HBoxContainer" parent="UI/HandSelector/CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="BottomPanel" type="Panel" parent="UI/HandSelector/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+
+[node name="CenterContainer2" type="CenterContainer" parent="UI/HandSelector/CenterContainer/VBoxContainer/BottomPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ConfirmButton" type="Button" parent="UI/HandSelector/CenterContainer/VBoxContainer/BottomPanel/CenterContainer2"]
+custom_minimum_size = Vector2(250, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "CONFIRM SELECTION"
+
+[node name="DraftSelector" type="Panel" parent="UI"]
+modulate = Color(1, 1, 0.796078, 1)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -595.0
+offset_top = -349.0
+offset_right = -163.0
+offset_bottom = 276.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_d47by")
+script = ExtResource("9_draft")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/DraftSelector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 10.0
+offset_bottom = -38.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="UI/DraftSelector/VBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(20.08, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Choose Your Rewards"
+label_settings = SubResource("LabelSettings_4xaxt")
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="InfoLabel" type="Label" parent="UI/DraftSelector/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Pick 0-2 items to add to your collection"
+horizontal_alignment = 1
+
+[node name="DraftGrid" type="GridContainer" parent="UI/DraftSelector/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme = SubResource("Theme_4ullb")
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 2
+
+[node name="ConfirmButton" type="Button" parent="UI/DraftSelector/VBoxContainer"]
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+text = "Confirm Selection"
+
+[node name="TradeDialog" type="Panel" parent="UI/DraftSelector"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/DraftSelector/TradeDialog"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="ItemButtons" type="HBoxContainer" parent="UI/DraftSelector/TradeDialog/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="UI/DraftSelector/TradeDialog/VBoxContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="TradeLabel" type="Label" parent="UI/DraftSelector/TradeDialog/VBoxContainer"]
+layout_mode = 2
+text = "Trade an item?"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="IngredientTradeDialog" type="Panel" parent="UI/DraftSelector"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -120.0
+offset_right = 250.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/DraftSelector/IngredientTradeDialog"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="TradeLabel" type="Label" parent="UI/DraftSelector/IngredientTradeDialog/VBoxContainer"]
+layout_mode = 2
+text = "Trade an ingredient?"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ItemButtons" type="HBoxContainer" parent="UI/DraftSelector/IngredientTradeDialog/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="UI/DraftSelector/IngredientTradeDialog/VBoxContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="RelicDisplay" type="HBoxContainer" parent="UI"]
+offset_left = 488.0
+offset_top = 4.0
+offset_right = 878.0
+offset_bottom = 36.0
+theme_override_constants/separation = 5
+script = ExtResource("10_relic")
+
+[node name="SpeedButton" type="Button" parent="UI"]
+offset_left = 1120.0
+offset_top = 10.0
+offset_right = 1260.0
+offset_bottom = 50.0
+text = "Speed: 1x"
+
+[node name="Timer" type="ColorRect" parent="UI"]
+visibility_layer = 3
+offset_left = 1074.0
+offset_top = 138.0
+offset_right = 1203.0
+offset_bottom = 193.0
+theme = SubResource("Theme_v6nig")
+color = Color(0.326518, 0.45508, 0.427554, 1)
+
+[node name="TimerDisplay" type="Label" parent="UI/Timer"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 49.0
+theme_override_font_sizes/font_size = 32
+text = "00:15"
+label_settings = SubResource("LabelSettings_daymt")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("7_timer_ui")
+
+[node name="PowerLVL" type="ColorRect" parent="UI"]
+visibility_layer = 3
+offset_left = 1074.0
+offset_top = 218.0
+offset_right = 1203.0
+offset_bottom = 238.0
+theme = SubResource("Theme_v6nig")
+color = Color(0.326518, 0.45508, 0.427554, 1)
+
+[node name="PowerLvl" type="Label" parent="UI/PowerLVL"]
+layout_mode = 0
+offset_right = 125.0
+offset_bottom = 35.0
+text = "PWR 9001"
+label_settings = SubResource("LabelSettings_hobxu")
+horizontal_alignment = 1

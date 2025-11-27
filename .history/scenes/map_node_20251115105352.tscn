@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3w6hn8y7qxvy"]
+
+[ext_resource type="Script" path="res://scripts/ui/map_node_ui.gd" id="1_map_node"]
+
+[node name="MapNode" type="Button"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 100.0
+offset_bottom = 100.0
+script = ExtResource("1_map_node")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="IconLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "🍳"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Cook"
+horizontal_alignment = 1
+vertical_alignment = 1

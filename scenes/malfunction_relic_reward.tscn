@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://w1pssmga7vlp"]
+
+[ext_resource type="Script" path="res://scripts/ui/malfunction_relic_reward.gd" id="1_relic"]
+[ext_resource type="LabelSettings" uid="uid://ctxq6c6w22vr1" path="res://scenes/ClockOrange.tres" id="2_yhkj3"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0khn8"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_woqnb"]
+texture = SubResource("PlaceholderTexture2D_0khn8")
+modulate_color = Color(0.592157, 0.192157, 0.0352941, 1)
+
+[node name="MalfunctionRelicReward" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_woqnb")
+script = ExtResource("1_relic")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "OVERHEAT SURVIVED!
+CHOOSE 1 SKILL"
+label_settings = ExtResource("2_yhkj3")
+horizontal_alignment = 1
+
+[node name="RelicContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 30
