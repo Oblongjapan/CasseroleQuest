@@ -1,0 +1,109 @@
+[gd_scene load_steps=10 format=3 uid="uid://dowptnxlg4vk7"]
+
+[ext_resource type="Script" path="res://scripts/ui/ingredient_card.gd" id="1_card"]
+[ext_resource type="Texture2D" uid="uid://da0fvo33warpf" path="res://Assets/Ingredient.png" id="3_137s6"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/PoorRichardOpti.otf" id="4_font"]
+
+[sub_resource type="Theme" id="Theme_fcm1q_font"]
+default_font = ExtResource("4_font")
+default_font_size = 16
+
+
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3snp5"]
+texture = ExtResource("3_137s6")
+
+[sub_resource type="LabelSettings" id="LabelSettings_go8kg"]
+font_size = 22
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_ckhxy"]
+default_font_size = 16
+TooltipLabel/colors/font_color = Color(0, 0, 0, 1)
+TooltipLabel/colors/font_outline_color = Color(0.0392157, 0.478431, 0.572549, 1)
+TooltipLabel/constants/outline_size = 8
+TooltipLabel/font_sizes/font_size = 25
+
+[sub_resource type="LabelSettings" id="LabelSettings_27wma"]
+font_color = Color(0, 0, 0, 1)
+
+[node name="IngredientCard" type="Control"]
+custom_minimum_size = Vector2(180, 260)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 180.0
+offset_bottom = 260.0
+mouse_default_cursor_shape = 2
+theme = SubResource("Theme_fcm1q")
+script = ExtResource("1_card")
+
+[node name="CardPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -62.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_3snp5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CardPanel"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="CardPanel/VBoxContainer"]
+custom_minimum_size = Vector2(165, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Ingredient Name"
+label_settings = SubResource("LabelSettings_go8kg")
+horizontal_alignment = 1
+autowrap_mode = 3
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="Spacer2" type="Control" parent="CardPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Food" type="Sprite2D" parent="CardPanel/VBoxContainer"]
+position = Vector2(88, 90)
+
+[node name="StatsContainer" type="VBoxContainer" parent="CardPanel/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = SubResource("Theme_ckhxy")
+theme_override_constants/separation = 2
+
+[node name="WaterLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Water is needed to make sure your ingredients don't dry out."
+mouse_filter = 1
+theme_override_font_sizes/font_size = 10
+text = "Water: 50"
+label_settings = SubResource("LabelSettings_27wma")
+horizontal_alignment = 1
+
+[node name="ResistLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Resistance to heat drain. Higher RST=less drain/second"
+mouse_filter = 1
+text = "Rst: 50"
+label_settings = SubResource("LabelSettings_27wma")
+horizontal_alignment = 1
+
+[node name="VolatilityLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Volatility is the multiplier applied to drain rate. Higher VOL = faster drain rate"
+mouse_filter = 1
+text = "Vol: 5"
+label_settings = SubResource("LabelSettings_27wma")
+horizontal_alignment = 1
