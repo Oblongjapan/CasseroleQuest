@@ -2,10 +2,21 @@
 
 [ext_resource type="Script" path="res://scripts/ui/ingredient_card.gd" id="1_card"]
 [ext_resource type="Texture2D" uid="uid://da0fvo33warpf" path="res://Assets/Ingredient.png" id="3_137s6"]
-[ext_resource type="FontFile" uid="uid://de35s8mnujbdl" path="res://Assets/Fonts/PoorRichardOpti.otf" id="4_font"]
+
+[sub_resource type="FontFile" id="FontFile_kl2ia"]
+cache/0/22/0/ascent = 0.0
+cache/0/22/0/descent = 0.0
+cache/0/22/0/underline_position = 0.0
+cache/0/22/0/underline_thickness = 0.0
+cache/0/22/0/scale = 1.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
 
 [sub_resource type="Theme" id="Theme_fcm1q_font"]
-default_font = ExtResource("4_font")
+default_font = SubResource("FontFile_kl2ia")
 default_font_size = 16
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3snp5"]

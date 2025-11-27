@@ -137,6 +137,7 @@ label_settings = ExtResource("3_6t28o")
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
@@ -182,7 +183,7 @@ theme_override_font_sizes/font_size = 28
 theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
 theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
-text = "How to PLay"
+text = "Tutorial"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(300, 60)

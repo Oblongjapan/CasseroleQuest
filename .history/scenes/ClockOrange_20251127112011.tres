@@ -1,0 +1,9 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bk0f5meuso21"]
+
+[ext_resource type="FontFile" uid="uid://drcpnqo36rrbg" path="res://Assets/Fonts/PoorRichardOpti.otf" id="1_font"]
+
+[resource]
+font = ExtResource("1_font")
+font_size = 49
+outline_size = 4
+outline_color = Color(1, 0.470588, 0.27451, 1)

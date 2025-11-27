@@ -11,6 +11,7 @@ extends Panel
 
 var recipe_book_manager: RecipeBookManager
 var recipe_book_ui: Panel
+var tutorial_ui: Panel
 
 func _ready():
 	print("[MainMenu] _ready() called")
@@ -41,10 +42,26 @@ func _ready():
 		# Fallback: add as child of MainMenu if no parent exists
 		add_child(recipe_book_ui)
 	
+	# Setup tutorial UI
+	var tutorial_scene = load("res://scenes/tutorial.tscn")
+	if tutorial_scene:
+		tutorial_ui = tutorial_scene.instantiate()
+		if get_parent():
+			get_parent().call_deferred("add_child", tutorial_ui)
+		else:
+			add_child(tutorial_ui)
+		print("[MainMenu] Tutorial UI created")
+	else:
+		print("[MainMenu] Warning: Could not load tutorial.tscn")
+	
 	# Setup after adding to tree
 	await get_tree().process_frame
 	recipe_book_ui.setup(recipe_book_manager)
 	recipe_book_ui.book_closed.connect(_on_recipe_book_closed)
+	
+	if tutorial_ui:
+		tutorial_ui.tutorial_closed.connect(_on_tutorial_closed)
+		tutorial_ui.hide()
 	
 	print("[MainMenu] Ready complete")
 

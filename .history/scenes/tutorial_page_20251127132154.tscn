@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8c9d0e1f2g3h"]
+
+[ext_resource type="Texture2D" uid="uid://b7p5nxvjngwb4" path="res://Assets/Tutorial pages/Main scene.png" id="1_screenshot"]
+[ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="2_font"]
+
+[node name="TutorialPage" type="VBoxContainer"]
+theme_override_constants/separation = 15
+
+[node name="Screenshot" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(800, 450)
+layout_mode = 2
+texture = ExtResource("1_screenshot")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DescriptionLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "The Main Cooking Screen shows:
+• TIMER - How long until food is done (top display)
+• MOISTURE BAR - Keep this balanced (vertical bar)
+• DECK TRACKER - Remaining ingredients (10/10)
+• START BUTTON - Begin cooking your selection
+
+Balance is key - too dry or too wet means failure!"
+horizontal_alignment = 1
+autowrap_mode = 3
