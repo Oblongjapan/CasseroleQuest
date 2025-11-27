@@ -340,6 +340,7 @@ func _update_round_counter_display() -> void:
 func _update_currency_display(new_amount: int) -> void:
 	if currency_label:
 		currency_label.text = "Currency: %d" % new_amount
+		currency_label.hide()  # Hide for now
 
 func _update_tier_progress_display() -> void:
 	if tier_progress_label and progression_manager:
@@ -531,7 +532,7 @@ func _show_hand_selector(after_shop: bool = false) -> void:
 			
 		# Show currency and deck tracker
 		if currency_label:
-			currency_label.show()
+			currency_label.hide()  # Hidden for now
 		if tier_progress_label:
 			tier_progress_label.show()
 		if deck_tracker:
@@ -702,7 +703,7 @@ func _show_ingredient_selector() -> void:
 	
 	# Show currency and deck tracker
 	if currency_label:
-		currency_label.show()
+		currency_label.hide()  # Hidden for now
 	if tier_progress_label:
 		tier_progress_label.show()
 	if deck_tracker:
@@ -740,7 +741,7 @@ func _on_round_started(ingredient_1: IngredientModel, ingredient_2) -> void:
 	
 	# Show currency and deck tracker
 	if currency_label:
-		currency_label.show()
+		currency_label.hide()  # Hidden for now
 	if tier_progress_label:
 		tier_progress_label.show()
 	if deck_tracker:
@@ -1617,3 +1618,8 @@ func _on_sample_selected(index: int) -> void:
 				var lbl = b.get_node_or_null("Label")
 				if lbl:
 					lbl.text = "UNAVAILABLE"
+		
+		# Automatically return to main scene after taking 2 samples
+		print("[Main] Sample limit reached - automatically returning to main scene")
+		await get_tree().create_timer(0.5).timeout  # Small delay for feedback
+		_on_shop_closed()

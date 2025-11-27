@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://c7y8vq3m1h8pc"]
+[gd_scene load_steps=41 format=3 uid="uid://c7y8vq3m1h8pc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]
@@ -98,6 +98,18 @@ shadow_size = 5
 shadow_color = Color(0, 0, 0.141176, 1)
 shadow_offset = Vector2(-1, 2)
 
+[sub_resource type="SystemFont" id="SystemFont_eyk7u"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_cqsf2"]
+font = SubResource("SystemFont_eyk7u")
+font_size = 31
+font_color = Color(0.301961, 1, 0.709804, 0.796078)
+outline_size = 1
+outline_color = Color(0.303233, 0.303233, 0.303233, 1)
+shadow_size = 2
+shadow_color = Color(0.137255, 0.137255, 0.137255, 0.415686)
+shadow_offset = Vector2(-1, 2)
+
 [sub_resource type="SystemFont" id="SystemFont_pi4nj"]
 font_names = PackedStringArray("Poor Richard")
 font_weight = 100
@@ -107,8 +119,21 @@ oversampling = 2.2
 font = SubResource("SystemFont_pi4nj")
 font_size = 20
 font_color = Color(0.933069, 0, 0.137291, 1)
-outline_size = 3
+outline_size = 2
 outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_f4qul"]
+font_names = PackedStringArray("Poor Richard")
+
+[sub_resource type="LabelSettings" id="LabelSettings_bs2k4"]
+font = SubResource("SystemFont_f4qul")
+font_size = 37
+font_color = Color(0.578049, 0.000242772, 0.578045, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.788235)
+shadow_offset = Vector2(2, 3)
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -348,7 +373,9 @@ offset_top = 100.0
 offset_right = 780.0
 offset_bottom = 150.0
 theme_override_font_sizes/font_size = 32
-text = "FREE SAMPLES!"
+text = "FREE SAMPLES!
+Take 2!"
+label_settings = SubResource("LabelSettings_cqsf2")
 horizontal_alignment = 1
 
 [node name="SampleButton1" type="TextureButton" parent="UI/ShopUI"]
@@ -402,10 +429,10 @@ offset_bottom = 718.0
 text = "Speed: 1x"
 
 [node name="DeckTracker" type="Label" parent="UI"]
-offset_left = 817.0
-offset_top = 162.0
-offset_right = 997.0
-offset_bottom = 202.0
+offset_left = 694.0
+offset_top = 160.0
+offset_right = 874.0
+offset_bottom = 200.0
 theme_override_colors/font_color = Color(0.792157, 0.301961, 0.0588235, 1)
 theme_override_font_sizes/font_size = 20
 text = "10/10"
@@ -415,6 +442,7 @@ vertical_alignment = 1
 script = ExtResource("16_deck")
 
 [node name="CurrencyLabel" type="Label" parent="UI"]
+visible = false
 offset_left = 851.0
 offset_top = 94.0
 offset_right = 1031.0
@@ -425,13 +453,14 @@ text = "Currency: 0"
 vertical_alignment = 1
 
 [node name="TierProgressLabel" type="Label" parent="UI"]
-offset_left = 851.0
-offset_top = 130.0
-offset_right = 1031.0
-offset_bottom = 160.0
+offset_left = 1112.0
+offset_top = 492.0
+offset_right = 1292.0
+offset_bottom = 534.0
 theme_override_colors/font_color = Color(0.3, 0.15, 0.5, 1)
 theme_override_font_sizes/font_size = 16
 text = "Tier 1: 0/6"
+label_settings = SubResource("LabelSettings_bs2k4")
 vertical_alignment = 1
 
 [node name="PauseMenu" parent="UI" instance=ExtResource("31_pause_menu")]
