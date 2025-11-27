@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dgnpbh7ptdivj"]
+[gd_scene load_steps=3 format=3 uid="uid://xjgxmy6xst6n"]
 
 [ext_resource type="Script" path="res://scripts/ui/tier_unlock_overlay.gd" id="1_tieroverlay"]
-[ext_resource type="LabelSettings" uid="uid://ctxq6c6w22vr1" path="res://scenes/ClockOrange.tres" id="2_65qvo"]
+[ext_resource type="LabelSettings" uid="uid://bk0f5meuso21" path="res://scenes/ClockOrange.tres" id="2_65qvo"]
 
 [node name="TierUnlockOverlay" type="Panel"]
 custom_minimum_size = Vector2(300, 100)

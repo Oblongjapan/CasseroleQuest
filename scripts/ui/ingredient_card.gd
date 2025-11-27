@@ -175,7 +175,7 @@ func setup(ing: IngredientModel, upgrade_desc: String = "") -> void:
 	# Set individual stat labels with stars for upgraded stats
 	if water_label:
 		var star = " ⭐" if "water" in upgraded_stats else ""
-		water_label.text = "Water: %d%s" % [ingredient.water_content, star]
+		water_label.text = "WATER: %d%s" % [ingredient.water_content, star]
 		print("[IngredientCard] Set water_label.text to: %s" % water_label.text)
 	else:
 		print("[IngredientCard] ERROR: water_label is null!")
@@ -189,14 +189,14 @@ func setup(ing: IngredientModel, upgrade_desc: String = "") -> void:
 			var buff_amount = ingredient.get_meta("heat_buff_amount", 0)
 			buff_indicator = " 🔥(+%d)" % buff_amount
 		
-		resist_label.text = "Rst: %d%s%s" % [ingredient.heat_resistance, star, buff_indicator]
+		resist_label.text = "RST: %d%s%s" % [ingredient.heat_resistance, star, buff_indicator]
 		print("[IngredientCard] Set resist_label.text to: %s" % resist_label.text)
 	else:
 		print("[IngredientCard] ERROR: resist_label is null!")
 	
 	if volatility_label:
 		var star = " ⭐" if "volatility" in upgraded_stats else ""
-		volatility_label.text = "Vol: %d%s" % [ingredient.volatility, star]
+		volatility_label.text = "VOL: %d%s" % [ingredient.volatility, star]
 		print("[IngredientCard] Set volatility_label.text to: %s" % volatility_label.text)
 	else:
 		print("[IngredientCard] ERROR: volatility_label is null!")
@@ -225,7 +225,11 @@ func _setup_single_food_with_plate(ingredient_name: String) -> void:
 	if plate_texture:
 		food_sprite.texture = plate_texture
 		food_sprite.z_index = 0
-		print("[IngredientCard] Set plate as base texture")
+		# Scale down plate by 10px (assuming plate is approximately 100px, scale to 0.9)
+		var plate_size = plate_texture.get_size()
+		var scale_factor = (plate_size.x - 20.0) / plate_size.x
+		food_sprite.scale = Vector2(scale_factor, scale_factor)
+		print("[IngredientCard] Set plate as base texture with scale: %s" % food_sprite.scale)
 	
 	# Clear any existing ingredient layers
 	for layer in ingredient_layer_sprites:
@@ -266,7 +270,11 @@ func _setup_layered_food_display(recipe_name: String) -> void:
 	if plate_texture:
 		food_sprite.texture = plate_texture
 		food_sprite.z_index = 0
-		print("[IngredientCard] Set plate as base texture")
+		# Scale down plate by 10px (assuming plate is approximately 100px, scale to 0.9)
+		var plate_size = plate_texture.get_size()
+		var scale_factor = (plate_size.x - 20.0) / plate_size.x
+		food_sprite.scale = Vector2(scale_factor, scale_factor)
+		print("[IngredientCard] Set plate as base texture with scale: %s" % food_sprite.scale)
 	
 	# Clear any existing ingredient layers
 	for layer in ingredient_layer_sprites:

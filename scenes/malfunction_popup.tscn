@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://buohaoxbkhiqq"]
+[gd_scene load_steps=5 format=3 uid="uid://du7uwou6t11e1"]
 
 [ext_resource type="Script" path="res://scripts/ui/malfunction_popup.gd" id="1_popup"]
-[ext_resource type="LabelSettings" uid="uid://b0ilq35gxqpvo" path="res://scenes/Drippy Red.tres" id="2_fjpy1"]
-[ext_resource type="LabelSettings" uid="uid://ctxq6c6w22vr1" path="res://scenes/ClockOrange.tres" id="3_184c4"]
+[ext_resource type="LabelSettings" uid="uid://dnc18dwvgvnjl" path="res://scenes/Drippy Red.tres" id="2_fjpy1"]
+[ext_resource type="LabelSettings" uid="uid://bk0f5meuso21" path="res://scenes/ClockOrange.tres" id="3_184c4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iwths"]
 bg_color = Color(0.611765, 0, 0, 0.803922)

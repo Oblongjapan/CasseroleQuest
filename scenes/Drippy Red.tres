@@ -1,4 +1,4 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://b0ilq35gxqpvo"]
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://dnc18dwvgvnjl"]
 
 [sub_resource type="SystemFont" id="SystemFont_t2u4u"]
 font_names = PackedStringArray("Poor Richard")

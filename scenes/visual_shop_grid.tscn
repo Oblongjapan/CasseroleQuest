@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://c6jrrcldechnm"]
+[gd_scene load_steps=3 format=3 uid="uid://d07a28yo0npba"]
 
 [ext_resource type="Script" path="res://scripts/ui/visual_shop_grid.gd" id="1_visual_grid"]
-[ext_resource type="PackedScene" uid="uid://biksdj1e3d7tf" path="res://scenes/shop_slot.tscn" id="2_shop_slot"]
+[ext_resource type="PackedScene" uid="uid://b36wpavift64h" path="res://scenes/shop_slot.tscn" id="2_shop_slot"]
 
 [node name="VisualShopGrid" type="Control"]
 layout_mode = 3
@@ -11,6 +11,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_visual_grid")
+auto_populate = null
+free_sample_count = null
 
 [node name="ShopTitle" type="Label" parent="."]
 layout_mode = 1

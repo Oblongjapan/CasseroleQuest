@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://3qxj67mhjg26"]
+[gd_scene load_steps=2 format=3 uid="uid://cimfb2qrls561"]
 
 [ext_resource type="Script" path="res://scripts/ui/hand_selector.gd" id="1_hand"]
 

@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://cjuyaj7j50xyv"]
+[gd_scene load_steps=9 format=3 uid="uid://dowptnxlg4vk7"]
 
 [ext_resource type="Script" path="res://scripts/ui/ingredient_card.gd" id="1_card"]
 [ext_resource type="Texture2D" uid="uid://da0fvo33warpf" path="res://Assets/Ingredient.png" id="3_137s6"]
 
 [sub_resource type="SystemFont" id="SystemFont_o4063"]
 font_names = PackedStringArray("Poor Richard")
+subpixel_positioning = 0
+oversampling = 1.9
 
 [sub_resource type="Theme" id="Theme_fcm1q"]
 default_font = SubResource("SystemFont_o4063")
@@ -14,17 +16,18 @@ default_font_size = 16
 texture = ExtResource("3_137s6")
 
 [sub_resource type="LabelSettings" id="LabelSettings_go8kg"]
-font_size = 27
+font_size = 22
 font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Theme" id="Theme_ckhxy"]
 default_font_size = 16
-TooltipLabel/colors/font_color = Color(0, 0.2926, 0.698249, 1)
-TooltipLabel/colors/font_outline_color = Color(0.670588, 0.298039, 0, 1)
-TooltipLabel/constants/outline_size = 4
+TooltipLabel/colors/font_color = Color(0, 0, 0, 1)
+TooltipLabel/colors/font_outline_color = Color(0.0392157, 0.478431, 0.572549, 1)
+TooltipLabel/constants/outline_size = 8
 TooltipLabel/font_sizes/font_size = 25
 
 [sub_resource type="LabelSettings" id="LabelSettings_27wma"]
+font_color = Color(0, 0, 0, 1)
 
 [node name="IngredientCard" type="Control"]
 custom_minimum_size = Vector2(180, 260)
@@ -62,6 +65,8 @@ text = "Ingredient Name"
 label_settings = SubResource("LabelSettings_go8kg")
 horizontal_alignment = 1
 autowrap_mode = 3
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="Spacer2" type="Control" parent="CardPanel/VBoxContainer"]
 layout_mode = 2
@@ -80,8 +85,8 @@ theme_override_constants/separation = 2
 [node name="WaterLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-tooltip_text = "Moisture Content"
-mouse_filter = 0
+tooltip_text = "Water is needed to make sure your ingredients don't dry out."
+mouse_filter = 1
 theme_override_font_sizes/font_size = 10
 text = "Water: 50"
 label_settings = SubResource("LabelSettings_27wma")
@@ -90,8 +95,8 @@ horizontal_alignment = 1
 [node name="ResistLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-tooltip_text = "Resistance to heat drain. Higher=less drain/second"
-mouse_filter = 0
+tooltip_text = "Resistance to heat drain. Higher RST=less drain/second"
+mouse_filter = 1
 text = "Rst: 50"
 label_settings = SubResource("LabelSettings_27wma")
 horizontal_alignment = 1
@@ -99,8 +104,8 @@ horizontal_alignment = 1
 [node name="VolatilityLabel" type="Label" parent="CardPanel/VBoxContainer/StatsContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-tooltip_text = "Volatility is the multiplier applied to drain rate. Higher Vol = faster drain rate"
-mouse_filter = 0
+tooltip_text = "Volatility is the multiplier applied to drain rate. Higher VOL = faster drain rate"
+mouse_filter = 1
 text = "Vol: 5"
 label_settings = SubResource("LabelSettings_27wma")
 horizontal_alignment = 1

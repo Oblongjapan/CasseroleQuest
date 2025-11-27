@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://hvl5p1srn2e8"]
+[gd_scene load_steps=2 format=3 uid="uid://dveqkcdhk6nw"]
 
 [ext_resource type="Script" path="res://scripts/ui/recipe_notification.gd" id="1_recipe"]
 
