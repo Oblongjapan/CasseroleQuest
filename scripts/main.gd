@@ -63,6 +63,7 @@ var pause_menu: Control = null
 @onready var currency_label: Label = $UI/CurrencyLabel
 @onready var tier_progress_label: Label = $UI/TierProgressLabel
 @onready var relic_display: HBoxContainer = $UI/RelicDisplay
+@onready var radio_overlay: TextureButton = $UI/RadioOverlay
 @onready var game_background: Sprite2D = $Background
 @onready var microwave_sprite: AnimatedSprite2D = $Background/Microwave
 @onready var on_button: Button = $Background/Microwave/ONButton
@@ -81,6 +82,8 @@ var overlay_2_start_pos: Vector2
 var low_pass_filter: AudioEffectLowPassFilter = null
 var phaser_filter: AudioEffectPhaser = null
 var music_bus_index: int = -1
+var lowpass_effect_index: int = -1
+var phaser_effect_index: int = -1
 
 # Game state
 var current_round_number: int = 1
@@ -268,6 +271,51 @@ func _ready():
 		print("[Main] Music player found on bus index: %d" % music_bus_index)
 		# Make sure music continues playing when game is paused
 		music_player.process_mode = Node.PROCESS_MODE_ALWAYS
+		# Using pre-pitched audio file (bgm_fast.mp3) - no pitch scaling needed
+		# Ensure looping is enabled for HTML5 export - set on AudioStreamMP3 directly
+		if music_player.stream and music_player.stream is AudioStreamMP3:
+			music_player.stream.loop = true
+			print("[Main] AudioStreamMP3 loop enabled")
+		
+		# Find existing effects in the bus layout or add new ones
+		var effect_count = AudioServer.get_bus_effect_count(music_bus_index)
+		print("[Main] Bus has %d existing effects" % effect_count)
+		
+		# Look for existing lowpass and phaser effects
+		for i in range(effect_count):
+			var effect = AudioServer.get_bus_effect(music_bus_index, i)
+			if effect is AudioEffectLowPassFilter and lowpass_effect_index == -1:
+				lowpass_effect_index = i
+				low_pass_filter = effect
+				print("[Main] Found existing lowpass filter at index %d" % i)
+			elif effect is AudioEffectPhaser and phaser_effect_index == -1:
+				phaser_effect_index = i
+				phaser_filter = effect
+				print("[Main] Found existing phaser filter at index %d" % i)
+		
+		# If no existing effects found, create and add new ones
+		if lowpass_effect_index == -1:
+			low_pass_filter = AudioEffectLowPassFilter.new()
+			low_pass_filter.cutoff_hz = 800.0
+			low_pass_filter.resonance = 1.0
+			lowpass_effect_index = AudioServer.get_bus_effect_count(music_bus_index)
+			AudioServer.add_bus_effect(music_bus_index, low_pass_filter, lowpass_effect_index)
+			print("[Main] Created new lowpass filter at index %d" % lowpass_effect_index)
+		
+		if phaser_effect_index == -1:
+			phaser_filter = AudioEffectPhaser.new()
+			phaser_filter.range_min_hz = 600.0
+			phaser_filter.range_max_hz = 1200.0
+			phaser_filter.rate_hz = 0.5
+			phaser_filter.depth = 0.4
+			phaser_effect_index = AudioServer.get_bus_effect_count(music_bus_index)
+			AudioServer.add_bus_effect(music_bus_index, phaser_filter, phaser_effect_index)
+			print("[Main] Created new phaser filter at index %d" % phaser_effect_index)
+		
+		# Make sure filters start disabled
+		AudioServer.set_bus_effect_enabled(music_bus_index, lowpass_effect_index, false)
+		AudioServer.set_bus_effect_enabled(music_bus_index, phaser_effect_index, false)
+		print("[Main] Audio effects initialized and disabled")
 	else:
 		print("[Main] Warning: MusicPlayer not found")
 	
@@ -346,6 +394,13 @@ func _update_tier_progress_display() -> void:
 	if tier_progress_label and progression_manager:
 		var current_tier = progression_manager.current_tier
 		var unique_recipes = progression_manager.unique_recipes_created
+		
+		# Hide tier label until first recipe is discovered
+		if unique_recipes == 0:
+			tier_progress_label.hide()
+			return
+		else:
+			tier_progress_label.show()
 		
 		# Determine next tier threshold
 		var next_threshold: int
@@ -514,11 +569,18 @@ func _show_hand_selector(after_shop: bool = false) -> void:
 	# Show moisture background and reset display to 0/0
 	if moisture_background:
 		moisture_background.show()
+	
+	# Clear ingredient overlays from previous round
+	if ingredient_overlay_1:
+		ingredient_overlay_1.clear_overlay()
+	if ingredient_overlay_2:
+		ingredient_overlay_2.clear_overlay()
+	
 	# Reset moisture bar to grey/empty state (0/0)
 	EventBus.moisture_changed.emit(0.0, 0.0, 0.0)
-	# Also reset the moisture label text to 0/0
+	# Also reset the moisture label text to 0
 	if moisture_label:
-		moisture_label.text = "0/0"
+		moisture_label.text = "0"
 	_update_moisture_display()
 	
 	if hand_selector:
@@ -534,7 +596,7 @@ func _show_hand_selector(after_shop: bool = false) -> void:
 		if currency_label:
 			currency_label.hide()  # Hidden for now
 		if tier_progress_label:
-			tier_progress_label.show()
+			_update_tier_progress_display()
 		if deck_tracker:
 			deck_tracker.show()
 			
@@ -573,8 +635,8 @@ func _update_moisture_display() -> void:
 	
 	# Update label
 	if moisture_label:
-		moisture_label.text = "%d/%d" % [total_moisture, max_moisture]
-		print("[Main] Updated moisture display: %d/%d" % [total_moisture, max_moisture])
+		moisture_label.text = "%d" % total_moisture
+		print("[Main] Updated moisture display: %d" % total_moisture)
 
 ## Find ingredient model by name from hand selector
 func _find_ingredient_by_name(ingredient_name: String) -> IngredientModel:
@@ -705,7 +767,7 @@ func _show_ingredient_selector() -> void:
 	if currency_label:
 		currency_label.hide()  # Hidden for now
 	if tier_progress_label:
-		tier_progress_label.show()
+		_update_tier_progress_display()
 	if deck_tracker:
 		deck_tracker.show()
 
@@ -743,13 +805,25 @@ func _on_round_started(ingredient_1: IngredientModel, ingredient_2) -> void:
 	if currency_label:
 		currency_label.hide()  # Hidden for now
 	if tier_progress_label:
-		tier_progress_label.show()
+		_update_tier_progress_display()
 	if deck_tracker:
 		deck_tracker.show()
 	
 	# Initialize all managers
 	print("[Main] Initializing moisture_manager...")
-	moisture_manager.setup(ingredient_1, ingredient_2, 1.0, inventory_manager)
+	
+	# Scale difficulty based on tier progression
+	# Tier 1: 1.0x (base difficulty)
+	# Tier 2: 1.6x (60% harder)
+	# Tier 3: 2.2x (120% harder)
+	var current_tier = progression_manager.current_tier
+	var difficulty_multiplier = 1.0
+	if current_tier >= 2:
+		# Reduced from previous aggressive scaling
+		difficulty_multiplier = 1.0 + ((current_tier - 1) * 0.6)
+	print("[Main] Current tier: %d, Difficulty multiplier: %.2fx" % [current_tier, difficulty_multiplier])
+	
+	moisture_manager.setup(ingredient_1, ingredient_2, difficulty_multiplier, inventory_manager)
 	
 	# The setup() function already emits moisture_changed signal which updates the bar
 	print("[Main] Moisture initialized: %.1f/%.1f" % [moisture_manager.current_moisture, moisture_manager.max_moisture])
@@ -1045,6 +1119,11 @@ func _show_recipe_notification() -> void:
 		print("[Main] Adding recipe to deck after animation: %s" % last_created_recipe.name)
 		fridge_manager.add_ingredient_to_deck(last_created_recipe)
 		print("[Main] Recipe added to deck successfully")
+		
+		# Reset moisture label to 0
+		if moisture_label:
+			moisture_label.text = "0"
+			print("[Main] Reset moisture label to 0")
 	else:
 		print("[Main] ERROR: recipe_card_reveal or last_created_recipe is null!")
 		# Fallback wait if reveal doesn't exist
@@ -1236,7 +1315,11 @@ func _on_shop_opened() -> void:
 	if game_background:
 		game_background.show()
 	
-	# Apply low pass filter to music
+	# Hide radio overlay during shop
+	if radio_overlay:
+		radio_overlay.hide()
+	
+	# Apply phaser and low pass filter to music
 	_apply_shop_music_filter()
 	
 	# Increment round number after completing a round
@@ -1263,7 +1346,7 @@ func _on_shop_opened() -> void:
 		fade_tween.tween_property(shop_ui, "modulate:a", 1.0, 0.5)
 
 func _on_shop_closed() -> void:
-	# Remove low pass filter from music
+	# Remove phaser and low pass filter from music
 	_remove_shop_music_filter()
 	
 	# Fade out shop UI
@@ -1283,9 +1366,18 @@ func _on_shop_closed() -> void:
 		tween.tween_property(main_camera, "position", main_camera_pos, 0.8).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		await tween.finished
 	
+	# Show radio overlay only after camera is back to main scene
+	if radio_overlay:
+		radio_overlay.show()
+	
 	# Return to hand selector for next round (draw 5 new cards after shop)
 	print("[Main] Shop closed - starting next round with fresh hand")
 	_show_hand_selector(true)
+
+## Handle radio button pressed - toggle music pitch scaling
+func _on_radio_pressed() -> void:
+	# Radio is just decorative - music always plays at 1.5x
+	pass
 
 ## Handle moisture changed from MoistureManager
 func _on_moisture_changed(current: float, max_value: float, bonus: float) -> void:
@@ -1298,11 +1390,11 @@ func _on_moisture_changed(current: float, max_value: float, bonus: float) -> voi
 	# Update label
 	if moisture_label:
 		var display_current = int(current)
-		var display_max = int(max_value + bonus)
-		moisture_label.text = "%d/%d" % [display_current, display_max]
+		# var display_max = int(max_value + bonus)
+		moisture_label.text = "%d" % display_current
 		moisture_label.show()
 	
-	print("[Main] Moisture updated: %d/%d (bonus: %d)" % [int(current), int(max_value), int(bonus)])
+	print("[Main] Moisture updated: %d (bonus: %d)" % [int(current), int(bonus)])
 
 ## Handle state changes
 func _on_state_changed(new_state: GameStateManager.GameState, _old_state: GameStateManager.GameState) -> void:
@@ -1490,52 +1582,44 @@ func _hide_hover_card() -> void:
 ## Apply low pass filter to music when entering shop
 func _apply_shop_music_filter() -> void:
 	if not music_player or music_bus_index < 0:
+		print("[Main] Cannot apply shop filter - music_player: %s, bus_index: %d" % [music_player != null, music_bus_index])
 		return
 	
-	# Check if filters are already applied
-	var effect_count = AudioServer.get_bus_effect_count(music_bus_index)
-	var has_lowpass = false
-	var has_phaser = false
-	for i in range(effect_count):
-		var effect = AudioServer.get_bus_effect(music_bus_index, i)
-		if effect is AudioEffectLowPassFilter:
-			has_lowpass = true
-		elif effect is AudioEffectPhaser:
-			has_phaser = true
+	print("[Main] Applying shop music filters...")
+	print("[Main] Lowpass index: %d, Phaser index: %d" % [lowpass_effect_index, phaser_effect_index])
 	
-	# Only add filters if they don't already exist
-	if not has_lowpass:
-		# Create low pass filter if it doesn't exist
-		if not low_pass_filter:
-			low_pass_filter = AudioEffectLowPassFilter.new()
-			low_pass_filter.cutoff_hz = 800.0  # Lower frequencies only (muffled effect)
-			low_pass_filter.resonance = 1.0
-		AudioServer.add_bus_effect(music_bus_index, low_pass_filter)
-		print("[Main] Applied low pass filter to shop music")
+	# Enable the effects
+	if lowpass_effect_index >= 0:
+		AudioServer.set_bus_effect_enabled(music_bus_index, lowpass_effect_index, true)
+		print("[Main] Enabled lowpass filter")
 	
-	if not has_phaser:
-		# Create phaser filter if it doesn't exist
-		if not phaser_filter:
-			phaser_filter = AudioEffectPhaser.new()
-			phaser_filter.range_min_hz = 440.0
-			phaser_filter.range_max_hz = 1600.0
-			phaser_filter.rate_hz = 0.5  # Slow phasing effect
-			phaser_filter.depth = 1.0
-		AudioServer.add_bus_effect(music_bus_index, phaser_filter)
-		print("[Main] Applied phaser filter to shop music")
+	if phaser_effect_index >= 0:
+		AudioServer.set_bus_effect_enabled(music_bus_index, phaser_effect_index, true)
+		print("[Main] Enabled phaser filter")
+	
+	# Verify they're enabled
+	if lowpass_effect_index >= 0:
+		var is_enabled = AudioServer.is_bus_effect_enabled(music_bus_index, lowpass_effect_index)
+		print("[Main] Lowpass enabled: %s" % is_enabled)
+	if phaser_effect_index >= 0:
+		var is_enabled = AudioServer.is_bus_effect_enabled(music_bus_index, phaser_effect_index)
+		print("[Main] Phaser enabled: %s" % is_enabled)
 
 ## Remove low pass filter from music when leaving shop
 func _remove_shop_music_filter() -> void:
 	if not music_player or music_bus_index < 0:
 		return
 	
-	# Find and remove both filters from the bus
-	var effect_count = AudioServer.get_bus_effect_count(music_bus_index)
-	for i in range(effect_count - 1, -1, -1):  # Iterate backwards to avoid index issues
-		var effect = AudioServer.get_bus_effect(music_bus_index, i)
-		if effect is AudioEffectLowPassFilter or effect is AudioEffectPhaser:
-			AudioServer.remove_bus_effect(music_bus_index, i)
-			print("[Main] Removed audio filter from music (index %d)" % i)
+	print("[Main] Removing shop music filters...")
+	
+	# Disable the effects instead of removing them
+	if lowpass_effect_index >= 0:
+		AudioServer.set_bus_effect_enabled(music_bus_index, lowpass_effect_index, false)
+		print("[Main] Disabled lowpass filter")
+	
+	if phaser_effect_index >= 0:
+		AudioServer.set_bus_effect_enabled(music_bus_index, phaser_effect_index, false)
+		print("[Main] Disabled phaser filter")
 
 ## Apply low pass filter only for pause menu
 func _apply_pause_music_filter() -> void:

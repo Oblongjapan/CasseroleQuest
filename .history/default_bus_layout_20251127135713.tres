@@ -1,0 +1,48 @@
+[gd_resource type="AudioBusLayout" load_steps=5 format=3 uid="uid://dr6sq35w4afro"]
+
+[sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_3jvmb"]
+resource_name = "LowPassFilter"
+cutoff_hz = 3600.0
+resonance = 0.36
+db = 1
+
+[sub_resource type="AudioEffectPitchShift" id="AudioEffectPitchShift_cfwgf"]
+resource_name = "PitchShift"
+pitch_scale = 1.58
+fft_size = 1
+
+[sub_resource type="AudioEffectPhaser" id="AudioEffectPhaser_mr8rp"]
+resource_name = "Phaser"
+range_max_hz = 880.0
+rate_hz = 5.543
+feedback = 0.3
+depth = 0.8
+
+[sub_resource type="AudioEffectEQ" id="AudioEffectEQ_6cfrg"]
+resource_name = "EQ"
+band_db/32_hz = -2.4
+band_db/100_hz = -4.5
+band_db/320_hz = -8.6
+band_db/3200_hz = 6.7
+band_db/10000_hz = 12.8
+
+[resource]
+bus/0/volume_db = -8.00903
+bus/0/effect/0/effect = SubResource("AudioEffectLowPassFilter_3jvmb")
+bus/0/effect/0/enabled = false
+bus/0/effect/1/effect = SubResource("AudioEffectPitchShift_cfwgf")
+bus/0/effect/1/enabled = false
+bus/0/effect/2/effect = SubResource("AudioEffectPhaser_mr8rp")
+bus/0/effect/2/enabled = false
+bus/0/effect/3/effect = SubResource("AudioEffectEQ_6cfrg")
+bus/0/effect/3/enabled = false
+bus/1/name = &"Music"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = 0.0
+bus/1/send = &"Master"
+bus/1/effect/0/effect = SubResource("AudioEffectLowPassFilter_3jvmb")
+bus/1/effect/0/enabled = false
+bus/1/effect/1/effect = SubResource("AudioEffectPhaser_mr8rp")
+bus/1/effect/1/enabled = false

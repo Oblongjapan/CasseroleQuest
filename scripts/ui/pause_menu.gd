@@ -98,13 +98,15 @@ func _on_sfx_volume_changed(value: float):
 func _apply_music_volume(value: float):
 	# Convert 0-1 slider to dB (-80 to 0)
 	var db = linear_to_db(value) if value > 0 else -80.0
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), db)
+	var master_bus_index = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_db(master_bus_index, db)
 	print("[PauseMenu] Music volume set to: %.2f (%.1f dB)" % [value, db])
 
 func _apply_sfx_volume(value: float):
 	# Convert 0-1 slider to dB (-80 to 0)
 	var db = linear_to_db(value) if value > 0 else -80.0
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), db)
+	var master_bus_index = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_db(master_bus_index, db)
 	print("[PauseMenu] SFX volume set to: %.2f (%.1f dB)" % [value, db])
 
 func _save_setting(key: String, value: float):

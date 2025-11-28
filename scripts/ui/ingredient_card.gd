@@ -217,6 +217,17 @@ func setup(ing: IngredientModel, upgrade_desc: String = "") -> void:
 	else:
 		print("[IngredientCard] WARNING: food_sprite is null!")
 
+	# Set tooltip for recipes to show ingredients
+	if "+" in ingredient.name:
+		var ingredients_list = ingredient.name.split("+")
+		var tooltip = "Ingredients:\n"
+		for ing_name in ingredients_list:
+			tooltip += "• " + ing_name.strip_edges() + "\n"
+		tooltip_text = tooltip.strip_edges()
+		print("[IngredientCard] Set tooltip for recipe: %s" % tooltip_text)
+	else:
+		tooltip_text = "" # No tooltip for single ingredients
+
 ## Setup single ingredient with plate
 func _setup_single_food_with_plate(ingredient_name: String) -> void:
 	print("[IngredientCard] Setting up single ingredient with plate: %s" % ingredient_name)

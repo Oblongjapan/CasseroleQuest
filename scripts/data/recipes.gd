@@ -14,8 +14,8 @@ var recipes: Dictionary = {}
 const TIER_0_UNLOCK_THRESHOLD = 0   # Base ingredients - always available
 const TIER_1_UNLOCK_THRESHOLD = 0   # 2-ingredient recipes - unlocked at game start
 const TIER_2_UNLOCK_THRESHOLD = 6   # 3+ ingredient recipes - REQUIRES 6 unique 2-ingredient recipes
-const TIER_3_UNLOCK_THRESHOLD = 30  # Advanced recipes - after 30 total recipes
-const TIER_4_UNLOCK_THRESHOLD = 42  # Legendary recipes - after 42 total recipes
+const TIER_3_UNLOCK_THRESHOLD = 12  # Advanced recipes - after 12 total recipes
+const TIER_4_UNLOCK_THRESHOLD = 20  # Legendary recipes - after 20 total recipes
 
 # Maximum ingredients allowed per tier
 const TIER_1_MAX_INGREDIENTS = 2    # Tier 1 limited to 2-ingredient recipes
@@ -182,6 +182,24 @@ func count_total_base_ingredients(ingredients: Array[IngredientModel]) -> int:
 
 ## Generate a recipe name based on ingredient combination
 ## Returns a real dish name if found, otherwise a descriptive combination name
+## Get base ingredient stats by name
+func get_base_ingredient_by_name(ingredient_name: String) -> IngredientModel:
+	var clean_name = ingredient_name.strip_edges().replace("Organic ", "")
+	
+	# Look through IngredientsData.INGREDIENTS dictionary
+	for key in IngredientsData.INGREDIENTS.keys():
+		var data = IngredientsData.INGREDIENTS[key]
+		if data.name == clean_name:
+			return IngredientModel.new(
+				data.name,
+				data.water_content,
+				data.heat_resistance,
+				data.volatility
+			)
+	
+	print("[RecipesData] WARNING: Could not find base ingredient: %s" % clean_name)
+	return null
+
 func get_recipe_name_for_ingredients(ingredient_names: Array[String]) -> String:
 	# Sort ingredients for consistent matching
 	var sorted_ingredients = ingredient_names.duplicate()
@@ -372,24 +390,46 @@ func combine_ingredients(ingredients: Array[IngredientModel], current_tier: int 
 			i, ing.name, ing.water_content, ing.heat_resistance, ing.volatility
 		])
 	
+	# Extract unique base ingredients from all input cards
+	# This handles combined ingredients and removes duplicates
+	var unique_base_ingredients: Dictionary = {}  # name -> IngredientModel
+	
+	for ingredient in ingredients:
+		# Split by "+" to handle combined ingredients
+		var parts = ingredient.name.split("+")
+		for part in parts:
+			var clean_name = part.strip_edges()
+			# If this base ingredient isn't in our dict yet, get its base stats
+			if not unique_base_ingredients.has(clean_name):
+				# Try to find the base ingredient stats from BASE_INGREDIENTS
+				var base_ing = get_base_ingredient_by_name(clean_name)
+				if base_ing:
+					unique_base_ingredients[clean_name] = base_ing
+					print("[RecipesData]   Found unique base: %s (Water:%d, RST:%d, Vol:%d)" % [
+						clean_name, base_ing.water_content, base_ing.heat_resistance, base_ing.volatility
+					])
+	
+	# Calculate stats based on unique base ingredients only
 	var total_water = 0
 	var total_heat_resistance = 0
 	var total_volatility = 0
+	var unique_count = unique_base_ingredients.size()
 	
-	for ingredient in ingredients:
-		total_water += ingredient.water_content
-		total_heat_resistance += ingredient.heat_resistance
-		total_volatility += ingredient.volatility
+	for base_name in unique_base_ingredients.keys():
+		var base_ing = unique_base_ingredients[base_name]
+		total_water += base_ing.water_content
+		total_heat_resistance += base_ing.heat_resistance
+		total_volatility += base_ing.volatility
 	
-	var count = ingredients.size()
-	var avg_heat_resistance = int(round(float(total_heat_resistance) / count))
+	print("[RecipesData] Using %d unique base ingredients for stats calculation" % unique_count)
+	var avg_heat_resistance = int(round(float(total_heat_resistance) / unique_count))
 	
 	# Volatility calculation:
 	# - 2 ingredients: Use AVERAGE (keeps early game balanced)
 	# - 3+ ingredients: Use SUM (more stuff = more chaos!)
 	var final_volatility: int
-	if total_base_ingredients <= 2:
-		final_volatility = int(round(float(total_volatility) / count))
+	if unique_count <= 2:
+		final_volatility = int(round(float(total_volatility) / unique_count))
 		print("[RecipesData] 2-ingredient recipe: Using AVERAGED volatility")
 	else:
 		final_volatility = total_volatility
@@ -398,23 +438,16 @@ func combine_ingredients(ingredients: Array[IngredientModel], current_tier: int 
 	print("[RecipesData] Totals: Water=%d, RST total=%d, Vol total=%d" % [total_water, total_heat_resistance, total_volatility])
 	print("[RecipesData] Final stats: RST (avg)=%d, Vol=%d" % [avg_heat_resistance, final_volatility])
 	
-	# Create combined identity using + signs (for internal tracking and sprite loading)
-	var ingredient_names: Array[String] = []
-	for ingredient in ingredients:
-		ingredient_names.append(ingredient.name)
-	var combined_identity = "+".join(ingredient_names)
+	# Create combined identity using UNIQUE base ingredient names only
+	# Sort alphabetically for consistent identity
+	var unique_names: Array[String] = []
+	for base_name in unique_base_ingredients.keys():
+		unique_names.append(base_name)
+	unique_names.sort()
+	var combined_identity = "+".join(unique_names)
 	
-	# Get all individual ingredient names for display name generation
-	var all_ingredient_names: Array[String] = []
-	for ingredient in ingredients:
-		# Split by "+" to handle combined ingredients
-		var parts = ingredient.name.split("+")
-		for part in parts:
-			var clean_name = part.strip_edges().replace("Organic ", "")
-			all_ingredient_names.append(clean_name)
-	
-	# Generate the friendly display name based on ingredients
-	var display_name = get_recipe_name_for_ingredients(all_ingredient_names)
+	# Generate the friendly display name based on unique ingredients
+	var display_name = get_recipe_name_for_ingredients(unique_names)
 	
 	print("[RecipesData] Creating recipe:")
 	print("[RecipesData]   Identity (internal): '%s'" % combined_identity)

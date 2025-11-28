@@ -180,14 +180,16 @@ func _purchase_shop_ingredient(item: Dictionary, container: Control):
 	if currency_manager.get_currency() >= cost:
 		if currency_manager.spend_currency(cost):
 			if fridge_manager and item.has("ingredient"):
-				fridge_manager.add_ingredient_to_deck(item.ingredient)
 				print("[ShopScreen] Purchased: %s for %d" % [item.get("name", ""), cost])
-				# Make transparent and disable interaction while keeping layout space
+				
+				# Make the food sprite transparent immediately
 				container.modulate.a = 0.0
 				container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-				# Disable all children to prevent any interaction
 				for child in container.get_children():
 					child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				
+				# Show flip and slide animation, then add to deck
+				_animate_ingredient_to_fridge(item.ingredient, hover_card)
 	else:
 		_show_message("Cannot afford item!")
 func _create_shop_item_panel(item: Dictionary) -> Panel:
@@ -395,21 +397,20 @@ func _on_hover_take_pressed():
 	hover_active = false
 	
 	if fridge_manager and current_hover_item.has("ingredient"):
-		fridge_manager.add_ingredient_to_deck(current_hover_item.ingredient)
 		free_samples_taken += 1
 		print("[ShopScreen] Free sample taken: %s (%d/2)" % [current_hover_item.get("name", ""), free_samples_taken])
 		
-		# Make transparent and disable interaction while keeping layout space
+		# Make the food sprite transparent immediately
 		if current_hover_container:
 			current_hover_container.modulate.a = 0.0
 			current_hover_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			# Disable all children to prevent any interaction
 			for child in current_hover_container.get_children():
 				child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		
+		# Show flip and slide animation, then add to deck
+		_animate_ingredient_to_fridge(current_hover_item.ingredient, hover_card)
 	
-	_destroy_hover_card()
-	
-	# Clear context
+	# Clear context (don't destroy hover card yet, animation will handle it)
 	current_hover_item.clear()
 	current_hover_container = null
 
@@ -471,3 +472,64 @@ func _show_message(message: String):
 	popup.popup_centered()
 	popup.confirmed.connect(func(): popup.queue_free())
 	popup.close_requested.connect(func(): popup.queue_free())
+
+## Animate ingredient card flipping and sliding to fridge (like recipe card reveal)
+func _animate_ingredient_to_fridge(ingredient: IngredientModel, card_to_animate: Control) -> void:
+	if not card_to_animate or not is_instance_valid(card_to_animate):
+		print("[ShopScreen] No valid card to animate")
+		return
+	
+	# Store the card's current scale
+	var start_scale = card_to_animate.scale
+	
+	# Remove the button from the hover card
+	if hover_button and is_instance_valid(hover_button):
+		hover_button.queue_free()
+		hover_button = null
+	
+	const FLIP_DURATION := 0.3
+	const SLIDE_DURATION := 0.8
+	const FRIDGE_POSITION := Vector2(641, 360)
+	
+	# Phase 1: Flip animation (scale X to 0, simulating a flip)
+	var flip_tween = create_tween()
+	flip_tween.set_ease(Tween.EASE_IN_OUT)
+	flip_tween.set_trans(Tween.TRANS_CUBIC)
+	
+	# Flip by scaling X to 0 then back (card turning)
+	flip_tween.tween_property(card_to_animate, "scale:x", 0.0, FLIP_DURATION / 2)
+	flip_tween.tween_property(card_to_animate, "scale:x", start_scale.x, FLIP_DURATION / 2)
+	
+	await flip_tween.finished
+	print("[ShopScreen] Flip complete, now sliding to fridge")
+	
+	# Phase 2: Slide to fridge and fade out
+	var slide_tween = create_tween()
+	slide_tween.set_parallel(true)
+	slide_tween.set_ease(Tween.EASE_IN)
+	slide_tween.set_trans(Tween.TRANS_CUBIC)
+	
+	# Slide to the fridge
+	slide_tween.tween_property(card_to_animate, "global_position", FRIDGE_POSITION - (card_to_animate.size / 2), SLIDE_DURATION)
+	
+	# Scale down as it approaches
+	slide_tween.tween_property(card_to_animate, "scale", Vector2(0.3, 0.3), SLIDE_DURATION)
+	
+	# Fade out
+	slide_tween.tween_property(card_to_animate, "modulate:a", 0.0, SLIDE_DURATION)
+	
+	await slide_tween.finished
+	print("[ShopScreen] Slide complete, adding ingredient to deck")
+	
+	# NOW add the ingredient to the fridge deck (after animation)
+	if fridge_manager:
+		fridge_manager.add_ingredient_to_deck(ingredient)
+	
+	# Clean up the hover card
+	if card_to_animate and is_instance_valid(card_to_animate):
+		card_to_animate.queue_free()
+	
+	# Reset hover tracking
+	hover_card = null
+	hover_active = false
+	print("[ShopScreen] Ingredient animation complete")

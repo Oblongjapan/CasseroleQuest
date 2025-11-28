@@ -1,13 +1,13 @@
-[gd_scene load_steps=41 format=3 uid="uid://c7y8vq3m1h8pc"]
+[gd_scene load_steps=40 format=3 uid="uid://c7y8vq3m1h8pc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]
 [ext_resource type="Script" path="res://scripts/managers/timer_manager.gd" id="3_timer"]
 [ext_resource type="Texture2D" uid="uid://dixdnonwj03lv" path="res://Assets/New Micro.png" id="5_x2led"]
+[ext_resource type="LabelSettings" uid="uid://c5s2bvyvpfv2f" path="res://scenes/microwavedisplay.tres" id="6_au4g4"]
 [ext_resource type="Texture2D" uid="uid://bkgobhtrd7tcd" path="res://Assets/Background.png" id="6_goj73"]
 [ext_resource type="Script" path="res://scripts/ui/moisture_bar_ui.gd" id="6_moisture_ui"]
 [ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="7_g5a3o"]
-[ext_resource type="FontFile" uid="uid://b5iw0672ajqxn" path="res://Assets/Fonts/alarm clock.ttf" id="7_gj5d8"]
 [ext_resource type="Script" path="res://scripts/ui/timer_display_ui.gd" id="7_timer_ui"]
 [ext_resource type="PackedScene" uid="uid://cimfb2qrls561" path="res://scenes/hand_selector.tscn" id="11_hand_scene"]
 [ext_resource type="Texture2D" uid="uid://5d01vp5cstuj" path="res://Assets/Food/Bread.png" id="13_2xncp"]
@@ -17,13 +17,15 @@
 [ext_resource type="Script" path="res://scripts/ui/microwave_start_button.gd" id="17_microwave_button"]
 [ext_resource type="PackedScene" uid="uid://dkw504nf6ftp3" path="res://scenes/game_over_screen.tscn" id="18_game_over_scene"]
 [ext_resource type="Script" path="res://scripts/ui/ingredient_overlay.gd" id="19_overlay_script"]
-[ext_resource type="AudioStream" uid="uid://bhc7wvr0pr32y" path="res://Assets/Audio/Music/bgm.mp3" id="23_yftsh"]
 [ext_resource type="AudioStream" uid="uid://qxqene6i710k" path="res://Assets/Audio/Sound effects/onbeep.wav" id="24_beep_sound"]
+[ext_resource type="AudioStream" uid="uid://dct5cdp6bpjfn" path="res://Assets/Audio/Music/bgm_fast.mp3" id="24_h1y41"]
 [ext_resource type="AudioStream" uid="uid://dkj0lm4n3tjo8" path="res://Assets/Audio/Sound effects/Microhum.wav" id="25_hum_sound"]
 [ext_resource type="PackedScene" uid="uid://du7uwou6t11e1" path="res://scenes/malfunction_popup.tscn" id="26_malfunction_popup"]
 [ext_resource type="PackedScene" path="res://scenes/malfunction_relic_reward.tscn" id="27_malfunction_relic"]
 [ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="31_pause_menu"]
 [ext_resource type="PackedScene" uid="uid://c1bcoi085tiw7" path="res://scenes/recipe_card_reveal.tscn" id="32_recipe_card_reveal"]
+[ext_resource type="FontFile" uid="uid://b7vxb6kxbcj7p" path="res://Assets/Fonts/Poor Richard Regular.ttf" id="33_poor_richard"]
+[ext_resource type="Texture2D" uid="uid://lygalqf1vk4u" path="res://Assets/Radio.png" id="34_radio"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vgjlf"]
 atlas = ExtResource("5_x2led")
@@ -75,33 +77,12 @@ animations = [{
 
 [sub_resource type="Theme" id="Theme_v6nig"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_daymt"]
-font = ExtResource("7_gj5d8")
-font_size = 18
-font_color = Color(0.988235, 0.403922, 0, 1)
-outline_size = 3
-outline_color = Color(0.0923971, 0.0923971, 0.0923971, 1)
-shadow_size = 3
-shadow_color = Color(0.176471, 0.176471, 0.176471, 1)
-shadow_offset = Vector2(-1, -0.295)
-
 [sub_resource type="LabelSettings" id="LabelSettings_hobxu"]
 font = ExtResource("7_g5a3o")
 font_size = 7
 font_color = Color(0.513726, 0.980392, 0.552941, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_52bdf"]
-font = ExtResource("7_gj5d8")
-font_size = 10
-font_color = Color(0.4, 1, 0.5, 1)
-shadow_size = 5
-shadow_color = Color(0, 0, 0.141176, 1)
-shadow_offset = Vector2(-1, 2)
-
-[sub_resource type="SystemFont" id="SystemFont_eyk7u"]
-
 [sub_resource type="LabelSettings" id="LabelSettings_cqsf2"]
-font = SubResource("SystemFont_eyk7u")
 font_size = 31
 font_color = Color(0.301961, 1, 0.709804, 0.796078)
 outline_size = 1
@@ -110,23 +91,15 @@ shadow_size = 2
 shadow_color = Color(0.137255, 0.137255, 0.137255, 0.415686)
 shadow_offset = Vector2(-1, 2)
 
-[sub_resource type="SystemFont" id="SystemFont_pi4nj"]
-font_names = PackedStringArray("Poor Richard")
-font_weight = 100
-oversampling = 2.2
-
 [sub_resource type="LabelSettings" id="LabelSettings_e2s5p"]
-font = SubResource("SystemFont_pi4nj")
+font = ExtResource("33_poor_richard")
 font_size = 20
 font_color = Color(0.933069, 0, 0.137291, 1)
 outline_size = 2
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="SystemFont" id="SystemFont_f4qul"]
-font_names = PackedStringArray("Poor Richard")
-
 [sub_resource type="LabelSettings" id="LabelSettings_bs2k4"]
-font = SubResource("SystemFont_f4qul")
+font = ExtResource("33_poor_richard")
 font_size = 37
 font_color = Color(0.578049, 0.000242772, 0.578045, 1)
 outline_size = 2
@@ -134,6 +107,27 @@ outline_color = Color(0, 0, 0, 1)
 shadow_size = 4
 shadow_color = Color(0, 0, 0, 0.788235)
 shadow_offset = Vector2(2, 3)
+
+[sub_resource type="Animation" id="Animation_throb"]
+resource_name = "throb"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 0.966667),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.03, 1.03), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_radio"]
+_data = {
+"throb": SubResource("Animation_throb")
+}
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -177,14 +171,14 @@ offset_right = 106.712
 offset_bottom = 38.5381
 theme_override_font_sizes/font_size = 32
 text = "00:15"
-label_settings = SubResource("LabelSettings_daymt")
+label_settings = ExtResource("6_au4g4")
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("7_timer_ui")
 metadata/_edit_use_anchors_ = true
 
 [node name="ONButton" type="Button" parent="Background/Microwave"]
-z_index = 10
+z_index = 15
 offset_left = 81.1681
 offset_top = 42.3382
 offset_right = 154.168
@@ -236,9 +230,9 @@ script = ExtResource("19_overlay_script")
 
 [node name="MoistureBar" type="ProgressBar" parent="UI"]
 offset_left = 754.0
-offset_top = 408.0
+offset_top = 431.0
 offset_right = 873.0
-offset_bottom = 446.0
+offset_bottom = 469.0
 rotation = -1.5708
 scale = Vector2(0.674951, 2.04155)
 max_value = 10000.0
@@ -248,11 +242,11 @@ metadata/_edit_use_anchors_ = true
 
 [node name="MoistureLabel" type="Label" parent="UI/MoistureBar"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+anchors_preset = -1
+anchor_left = 0.724106
+anchor_top = 0.706244
+anchor_right = 0.724106
+anchor_bottom = 0.785191
 offset_left = 82.7327
 offset_top = -37.1233
 offset_right = 159.733
@@ -260,9 +254,9 @@ offset_bottom = -22.1233
 grow_horizontal = 2
 grow_vertical = 2
 rotation = 1.57079
-scale = Vector2(0.988643, 2.87638)
+scale = Vector2(0.745834, 2.52875)
 text = "0/0"
-label_settings = SubResource("LabelSettings_52bdf")
+label_settings = ExtResource("6_au4g4")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -361,8 +355,10 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 21.0
-offset_bottom = 21.0
+offset_left = -7.0
+offset_top = 32.0
+offset_right = -7.0
+offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -397,9 +393,9 @@ stretch_mode = 5
 [node name="SampleButton3" type="TextureButton" parent="UI/ShopUI"]
 layout_mode = 0
 offset_left = 440.0
-offset_top = 73.0
+offset_top = 72.0
 offset_right = 831.0
-offset_bottom = 485.0
+offset_bottom = 484.0
 stretch_mode = 5
 
 [node name="ExitButton" type="Button" parent="UI/ShopUI"]
@@ -453,10 +449,10 @@ text = "Currency: 0"
 vertical_alignment = 1
 
 [node name="TierProgressLabel" type="Label" parent="UI"]
-offset_left = 1112.0
-offset_top = 492.0
-offset_right = 1292.0
-offset_bottom = 534.0
+offset_left = 758.0
+offset_top = 67.0
+offset_right = 938.0
+offset_bottom = 109.0
 theme_override_colors/font_color = Color(0.3, 0.15, 0.5, 1)
 theme_override_font_sizes/font_size = 16
 text = "Tier 1: 0/6"
@@ -469,14 +465,28 @@ visible = false
 [node name="RecipeCardReveal" parent="UI" instance=ExtResource("32_recipe_card_reveal")]
 visible = false
 
+[node name="RadioOverlay" type="TextureButton" parent="UI"]
+offset_left = 1018.0
+offset_top = 386.0
+offset_right = 1189.0
+offset_bottom = 504.0
+texture_normal = ExtResource("34_radio")
+stretch_mode = 0
+metadata/_pitch_enabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/RadioOverlay"]
+libraries = {
+"radio_throb": SubResource("AnimationLibrary_radio")
+}
+autoplay = "radio_throb/throb"
+speed_scale = 1.5
+
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("23_yftsh")
-volume_db = -9.874
-pitch_scale = 1.49
+stream = ExtResource("24_h1y41")
+volume_db = -3.931
 autoplay = true
 mix_target = 1
 max_polyphony = 4
-parameters/looping = true
 
 [node name="BeepPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("24_beep_sound")

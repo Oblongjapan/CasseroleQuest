@@ -406,8 +406,14 @@ func _toggle_card_selection(ingredient: IngredientModel, card: IngredientCard) -
 		print("[HandSelector] Deselecting %s from overlay slot %d" % [ingredient.name, overlay_slot])
 		ingredient_deselected.emit(overlay_slot)
 	else:
+		# Calculate potential total ingredients to check for 4+ combo exception
+		var potential_selection = selected_ingredients.duplicate()
+		potential_selection.append(ingredient)
+		var total_ingredients = RecipesData.count_total_base_ingredients(potential_selection)
+		
 		# Check if this ingredient (or any of its base ingredients) is already selected
-		if _is_ingredient_duplicate(ingredient.name):
+		# ALLOW duplicates if total ingredients >= 4
+		if total_ingredients < 4 and _is_ingredient_duplicate(ingredient.name):
 			print("[HandSelector] ❌ Cannot select duplicate ingredient: %s" % ingredient.name)
 			# TODO: Show feedback to player that duplicates aren't allowed
 			return

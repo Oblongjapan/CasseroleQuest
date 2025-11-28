@@ -20,12 +20,12 @@ func _on_moisture_changed(current_moisture: float, max_m: float, bonus_m: float)
 	max_value = max_m if max_m > 0 else 1.0
 	value = current_moisture
 
-	# Build label text: "current / max (+bonus)"
+	# Build label text: "current (+bonus)"
 	if label:
 		var bonus_text = ""
 		if bonus_m > 0:
 			bonus_text = " (+%d)" % int(bonus_m)
-		label.text = "%d/%d%s" % [int(current_moisture), int(max_m), bonus_text]
+		label.text = "%d%s" % [int(current_moisture), bonus_text]
 
 	# Color change based on percentage of max (Green → Yellow → Red)
 	# When idle (max_m = 0), show green
