@@ -1,0 +1,141 @@
+[gd_scene load_steps=4 format=3 uid="uid://demgsmvd2b8c8"]
+
+[ext_resource type="Script" path="res://scripts/ui/tutorial.gd" id="1_tutorial"]
+[ext_resource type="Texture2D" path="res://Assets/Tutorial pages/Main scene.png" id="2_page1"]
+[ext_resource type="Texture2D" path="res://Assets/Tutorial pages/Fridge.png" id="3_page2"]
+[ext_resource type="Texture2D" path="res://Assets/Tutorial pages/Recipe Book.png" id="4_page3"]
+[ext_resource type="Texture2D" path="res://Assets/Tutorial pages/Recipe Card.png" id="5_page4"]
+[ext_resource type="Texture2D" path="res://Assets/Tutorial pages/Main menu.png" id="6_page5"]
+[ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="7_font"]
+[ext_resource type="PackedScene" uid="uid://b8c9d0e1f2g3h" path="res://scenes/tutorial_page.tscn" id="8_page"]
+
+[node name="Tutorial" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tutorial")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.05, 0.15, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 1, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 48
+text = "How to Play"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="PageContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PageContent" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/PageContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Page1" parent="MarginContainer/VBoxContainer/ScrollContainer/PageContainer/PageContent" instance=ExtResource("8_page")]
+layout_mode = 2
+screenshot_texture = ExtResource("2_page1")
+description_text = "The Main Cooking Screen shows:
+• TIMER - How long until food is done (top display)
+• MOISTURE BAR - Keep this balanced (vertical bar)
+• DECK TRACKER - Remaining ingredients (10/10)
+• START BUTTON - Begin cooking your selection
+
+Balance is key - too dry or too wet means failure!"
+
+[node name="Page2" parent="MarginContainer/VBoxContainer/ScrollContainer/PageContainer/PageContent" instance=ExtResource("8_page")]
+layout_mode = 2
+screenshot_texture = ExtResource("4_page3")
+description_text = "The Fridge (Ingredient Selection):
+• Select 2 ingredients to microwave together
+• Each ingredient has MOISTURE and VOLATILITY stats
+• MOISTURE: How much water it adds (higher = wetter)
+• VOLATILITY: How fast it heats/dries (higher = faster)
+• Combine wisely to balance moisture over time!"
+
+[node name="Page3" parent="MarginContainer/VBoxContainer/ScrollContainer/PageContainer/PageContent" instance=ExtResource("8_page")]
+layout_mode = 2
+screenshot_texture = ExtResource("5_page4")
+description_text = "The Recipe Book:
+• Tracks all recipes you've discovered
+• Shows ingredient combinations that worked
+• Displays recipe stats and tier level
+• Unlock higher tiers by discovering more recipes
+• Use this to plan future ingredient combinations!"
+
+[node name="Page4" parent="MarginContainer/VBoxContainer/ScrollContainer/PageContainer/PageContent" instance=ExtResource("8_page")]
+layout_mode = 2
+screenshot_texture = ExtResource("6_page5")
+description_text = "Recipe Cards show:
+• COMBO NAME - The dish you created
+• MOISTURE STAT - Water content of the recipe
+• VOLATILITY STAT - How quickly it cooks
+• TIER - Recipe difficulty/complexity level
+
+Tip: Higher tier recipes give better rewards and unlock new ingredients in the shop!"
+
+[node name="NavigationContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="PrevButton" type="Button" parent="MarginContainer/VBoxContainer/NavigationContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 24
+text = "< Previous"
+
+[node name="PageIndicator" type="Label" parent="MarginContainer/VBoxContainer/NavigationContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 24
+text = "Page 1 / 5"
+
+[node name="NextButton" type="Button" parent="MarginContainer/VBoxContainer/NavigationContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 24
+text = "Next >"
+
+[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 24
+text = "Close Tutorial"

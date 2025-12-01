@@ -1,10 +1,6 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bk0f5meuso21"]
-
-[sub_resource type="SystemFont" id="SystemFont_1ymwe"]
-font_names = PackedStringArray("Poor Richard")
+[gd_resource type="LabelSettings" format=3 uid="uid://bk0f5meuso21"]
 
 [resource]
-font = SubResource("SystemFont_1ymwe")
 font_size = 49
 outline_size = 4
 outline_color = Color(1, 0.470588, 0.27451, 1)
