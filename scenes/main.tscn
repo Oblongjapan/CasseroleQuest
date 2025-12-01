@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://c7y8vq3m1h8pc"]
+[gd_scene load_steps=42 format=3 uid="uid://c7y8vq3m1h8pc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://scripts/ui/moisture_bar_ui.gd" id="6_moisture_ui"]
 [ext_resource type="FontFile" uid="uid://cwsnkghnjdfdp" path="res://Assets/Early GameBoy.ttf" id="7_g5a3o"]
 [ext_resource type="Script" path="res://scripts/ui/timer_display_ui.gd" id="7_timer_ui"]
+[ext_resource type="PackedScene" uid="uid://bw47r30uhpk7u" path="res://scenes/recipe_discovery_reveal.tscn" id="10_discovery"]
 [ext_resource type="PackedScene" uid="uid://cimfb2qrls561" path="res://scenes/hand_selector.tscn" id="11_hand_scene"]
 [ext_resource type="Texture2D" uid="uid://5d01vp5cstuj" path="res://Assets/Food/Bread.png" id="13_2xncp"]
 [ext_resource type="Script" path="res://scripts/ui/round_failed_screen.gd" id="14_failed"]
@@ -26,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://c1bcoi085tiw7" path="res://scenes/recipe_card_reveal.tscn" id="32_recipe_card_reveal"]
 [ext_resource type="FontFile" uid="uid://b7vxb6kxbcj7p" path="res://Assets/Fonts/Poor Richard Regular.ttf" id="33_poor_richard"]
 [ext_resource type="Texture2D" uid="uid://lygalqf1vk4u" path="res://Assets/Radio.png" id="34_radio"]
+[ext_resource type="PackedScene" path="res://scenes/card_selector.tscn" id="35_card_selector"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vgjlf"]
 atlas = ExtResource("5_x2led")
@@ -230,23 +232,22 @@ script = ExtResource("19_overlay_script")
 
 [node name="MoistureBar" type="ProgressBar" parent="UI"]
 offset_left = 754.0
-offset_top = 431.0
-offset_right = 873.0
-offset_bottom = 469.0
+offset_top = 415.0
+offset_right = 843.0
+offset_bottom = 453.0
 rotation = -1.5708
 scale = Vector2(0.674951, 2.04155)
 max_value = 10000.0
 show_percentage = false
 script = ExtResource("6_moisture_ui")
-metadata/_edit_use_anchors_ = true
 
 [node name="MoistureLabel" type="Label" parent="UI/MoistureBar"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.724106
-anchor_top = 0.706244
-anchor_right = 0.724106
-anchor_bottom = 0.785191
+anchor_left = 0.568656
+anchor_top = 0.732021
+anchor_right = 0.568656
+anchor_bottom = 0.810969
 offset_left = 82.7327
 offset_top = -37.1233
 offset_right = 159.733
@@ -398,16 +399,31 @@ offset_right = 831.0
 offset_bottom = 484.0
 stretch_mode = 5
 
+[node name="MakeOrganicButton" type="Button" parent="UI/ShopUI"]
+layout_mode = 0
+offset_left = 506.0
+offset_top = 553.0
+offset_right = 766.0
+offset_bottom = 623.0
+theme_override_colors/font_color = Color(0.301961, 1, 0.709804, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 28
+text = "Make Organic"
+
 [node name="ExitButton" type="Button" parent="UI/ShopUI"]
 layout_mode = 0
-offset_left = 540.0
-offset_top = 581.0
-offset_right = 740.0
-offset_bottom = 641.0
+offset_left = 537.0
+offset_top = 621.0
+offset_right = 737.0
+offset_bottom = 681.0
 theme_override_font_sizes/font_size = 20
 text = "Continue"
 
 [node name="GameOverScreen" parent="UI" instance=ExtResource("18_game_over_scene")]
+visible = false
+
+[node name="RecipeDiscoveryReveal" parent="UI" instance=ExtResource("10_discovery")]
 visible = false
 
 [node name="MalfunctionPopup" parent="UI" instance=ExtResource("26_malfunction_popup")]
@@ -437,6 +453,24 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("16_deck")
 
+[node name="DiscoveryNotification" type="Label" parent="UI"]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 100.0
+offset_right = 300.0
+offset_bottom = 160.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 32
+text = "NEW RECIPE: Test"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="CurrencyLabel" type="Label" parent="UI"]
 visible = false
 offset_left = 851.0
@@ -464,6 +498,10 @@ visible = false
 
 [node name="RecipeCardReveal" parent="UI" instance=ExtResource("32_recipe_card_reveal")]
 visible = false
+
+[node name="CardSelector" parent="UI" instance=ExtResource("35_card_selector")]
+visible = false
+z_index = 100
 
 [node name="RadioOverlay" type="TextureButton" parent="UI"]
 offset_left = 1018.0

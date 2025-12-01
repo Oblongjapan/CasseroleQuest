@@ -175,7 +175,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
 text = "Recipe Book"
 
 [node name="TutorialButton" type="Button" parent="VBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0.9, 0.7, 1, 1)
