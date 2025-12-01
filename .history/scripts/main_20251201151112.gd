@@ -1771,6 +1771,12 @@ func _on_card_selected_for_organic(ingredient_name: String) -> void:
 	# Apply upgrade to the selected card
 	fridge_manager.upgrade_ingredient_stats(ingredient_name, pending_organic_upgrade)
 	
+	# Mark as used and disable button
+	organic_used = true
+	if make_organic_button:
+		make_organic_button.disabled = true
+		make_organic_button.text = "USED"
+	
 	# Get the upgraded ingredient to show animation
 	var upgraded_ingredient: IngredientModel = null
 	var all_cards = fridge_manager.deck + fridge_manager.discard_pile
@@ -1790,13 +1796,7 @@ func _on_card_selected_for_organic(ingredient_name: String) -> void:
 		# Show spring-in and slide animation
 		await _show_organic_upgrade_animation(upgraded_ingredient, start_pos)
 	
-	# NOW mark as used and disable button (after successful application)
-	organic_used = true
-	if make_organic_button:
-		make_organic_button.disabled = true
-		make_organic_button.text = "USED"
-	
-	# Clear pending upgrade after use
+	# Clear pending upgrade
 	pending_organic_upgrade.clear()
 	
 ## Show organic upgrade animation - spring in and slide to recipe box

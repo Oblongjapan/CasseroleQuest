@@ -2104,18 +2104,6 @@ func combine_ingredients(ingredients: Array[IngredientModel], current_tier: int 
 	# Store the display name as metadata
 	new_ingredient.set_meta("display_name", display_name)
 	
-	# Preserve upgraded stats from all input ingredients
-	var combined_upgraded_stats: Array = []
-	for ingredient in ingredients:
-		var ing_upgraded_stats: Array = ingredient.get_meta("upgraded_stats", [])
-		for stat in ing_upgraded_stats:
-			if not stat in combined_upgraded_stats:
-				combined_upgraded_stats.append(stat)
-	
-	if not combined_upgraded_stats.is_empty():
-		new_ingredient.set_meta("upgraded_stats", combined_upgraded_stats)
-		print("[RecipesData] Preserved upgraded stats: %s" % combined_upgraded_stats)
-	
 	return new_ingredient
 
 ## Helper function to create a combined ingredient from ingredient names (for discovery reveal)
