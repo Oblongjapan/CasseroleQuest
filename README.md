@@ -1,4 +1,4 @@
-# Microwavr
+# Casserole Quest
 
 A roguelike deckbuilding game where you combine ingredient cards to create recipes in a microwave, managing moisture levels while discovering new combinations!
 
@@ -71,10 +71,9 @@ Recipes are classified by **ingredient count** and gated by **tier progression**
 - **Tier 2**: 3-4 ingredient recipes (unlocked after 6 unique Tier 1 recipes)
 - **Tier 3**: 5-6 ingredient recipes (unlocked after 12 total recipes)
 - **Tier 4**: 7-8 ingredient recipes (unlocked after 20 total recipes)
-- **Tier 5**: 9-ingredient recipes (unlocked after 30 total recipes)
-- **Tier 6**: 10-ingredient recipes (unlocked after 42 total recipes)
-- **Tier 7**: 11-ingredient recipes (unlocked after 56 total recipes)
-- **Tier 8**: 12-13 ingredient recipes (unlocked after 72 total recipes)
+- **Tier 5**: 9-10ingredient recipes (unlocked after 30 total recipes)
+- **Tier 6**: 11-12ingredient recipes (unlocked after 42 total recipes)
+- **Tier 7**: 13-ingredient recipes (unlocked after 56 total recipes)
 
 **Recipe Stats:**
 - **Water Content**: SUM of all ingredients
@@ -90,7 +89,7 @@ Recipes are classified by **ingredient count** and gated by **tier progression**
 
 **Shop System** (Every 3 rounds):
 - **Sample 3 ingredients** - Take up to 2 free samples, added to persistent hand
-- **Make Organic** - Upgrade one card with +10 to any stat (one-time use per shop)
+- **Make Organic** - Upgrade one card with random stat and value (one-time use per shop)
 - Samples and organic upgrades persist between rounds
 
 **Hand Management**:
@@ -131,9 +130,6 @@ drain_rate = (volatility / heat_resistance) * difficulty_multiplier * delta
 - Hover for ingredient tooltip
 - Paginated display (200 recipes per page)
 
-### Relics System
-Passive items that modify gameplay:
-- Example: "Plastic Wrap" - All ingredients get +15 heat resistance
 
 ## Available Ingredients
 
@@ -152,7 +148,7 @@ Passive items that modify gameplay:
 
 **Organic Variants:**
 - Any ingredient can be upgraded to "Organic" in the shop
-- Adds ⭐ to name and +10 to chosen stat
+- Adds ⭐ to effected stat
 
 ## Code Architecture
 
@@ -178,8 +174,6 @@ Each manager handles ONE domain:
 - **ProgressionManager**: Recipe tracking, tier unlocks
 - **RecipeBookManager**: Persistent recipe discovery
 - **ShopManager**: 3-sample shop system
-- **InventoryManager**: Relics (passive items)
-- **CurrencyManager**: Currency tracking
 
 ### UI Patterns
 
