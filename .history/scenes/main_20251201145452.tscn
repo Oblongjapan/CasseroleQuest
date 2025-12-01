@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://c7y8vq3m1h8pc"]
+[gd_scene load_steps=42 format=3 uid="uid://c7y8vq3m1h8pc"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/managers/moisture_manager.gd" id="2_moisture"]

@@ -154,28 +154,20 @@ func upgrade_ingredient_stats(ingredient_name: String, modifications: Dictionary
 	
 	for card in all_cards:
 		if card.name == ingredient_name:
-			# Get existing upgraded stats array (or create new one)
-			var upgraded_stats: Array = card.get_meta("upgraded_stats", [])
-			
 			# Apply modifications with proper clamping (0-100 range for all stats)
 			if modifications.has("water"):
 				card.water_content = clampi(card.water_content + modifications.water, 0, 100)
-				if not "water" in upgraded_stats:
-					upgraded_stats.append("water")
+				card.set_meta("upgraded_stat", "water")
 			
 			if modifications.has("heat_resistance"):
 				card.heat_resistance = clampi(card.heat_resistance + modifications.heat_resistance, 0, 100)
-				if not "heat_resistance" in upgraded_stats:
-					upgraded_stats.append("heat_resistance")
+				card.set_meta("upgraded_stat", "heat_resistance")
 			
 			if modifications.has("volatility"):
 				# Volatility can't go below 0
 				card.volatility = clampi(card.volatility + modifications.volatility, 0, 100)
-				if not "volatility" in upgraded_stats:
-					upgraded_stats.append("volatility")
+				card.set_meta("upgraded_stat", "volatility")
 			
-			# Store the updated array
-			card.set_meta("upgraded_stats", upgraded_stats)
 			_upgraded_count += 1
 	
 	_emit_deck_changed()

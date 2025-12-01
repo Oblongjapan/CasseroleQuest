@@ -80,11 +80,11 @@ func _gui_input(event: InputEvent) -> void:
 func setup(ing: IngredientModel, upgrade_desc: String = "") -> void:
 	ingredient = ing
 	
-	# Get upgraded stats array (this is now the primary way to track upgrades)
-	var upgraded_stats: Array = ingredient.get_meta("upgraded_stats", [])
-	
-	# Check if ingredient is upgraded (for backward compatibility and shop items)
-	var is_upgraded = ingredient.get_meta("is_upgraded", false) or not upgraded_stats.is_empty()
+	# Check if ingredient is upgraded
+	var is_upgraded = ingredient.get_meta("is_upgraded", false)
+	var upgraded_stats: Array = []
+	if is_upgraded:
+		upgraded_stats = ingredient.get_meta("upgraded_stats", [])
 	
 	# Apply blue outline for upgraded ingredients
 	if is_upgraded and card_style:

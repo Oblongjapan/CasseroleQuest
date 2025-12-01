@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://du7uwou6t11e1"]
+[gd_scene load_steps=5 format=3 uid="uid://dgxuwbasndgfe"]
 
 [ext_resource type="Script" path="res://scripts/ui/malfunction_popup.gd" id="1_popup"]
 [ext_resource type="LabelSettings" uid="uid://dnc18dwvgvnjl" path="res://scenes/Drippy Red.tres" id="2_fjpy1"]
